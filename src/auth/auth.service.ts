@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -15,24 +15,35 @@ export class AuthService {
   private jwtService:JwtService
   ){}
   
-async signup(signupdto:SignUpDto):Promise <{token:string}>{
-
-  const {usernames , email, password} = signupdto
-  const hashedpassword = await bcrypt.hash(password,10)
-
-  const user = await this.usersrepository.create({
-    usernames,
-    email,
-    password:hashedpassword
-  });
-
-  await this.usersrepository.save(user);
-
-  const token = this.jwtService.sign({ id: user.id});
-
-  return { token}
-
-}
+  async signup(signupdto: SignUpDto): Promise<{ token: string }> {
+    const { usernames, email, password } = signupdto;
+  
+    // Hash the password
+    const hashedpassword = await bcrypt.hash(password, 10);
+  
+    // Check if the user already exists
+    const existingUser = await this.usersrepository.findOneBy({ email });
+  
+    if (existingUser) {
+      throw new HttpException('User with this email already exists', HttpStatus.CONFLICT);
+    }
+  
+    // Create a new user
+    const newUser = this.usersrepository.create({
+      usernames,
+      email,
+      password: hashedpassword
+    });
+  
+    // Save the new user
+    const savedUser = await this.usersrepository.save(newUser);
+  
+    // Generate JWT token
+    const token = this.jwtService.sign({ id: savedUser.id });
+  
+    return { token };
+  }
+  
 
   async signin(logindto:LoginDto):Promise<{token:string}>{
     
