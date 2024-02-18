@@ -1,12 +1,12 @@
 import { Column , Entity , PrimaryGeneratedColumn , CreateDateColumn , UpdateDateColumn } from 'typeorm'
 
-@Entity('Users')
+@Entity()
 export class User {
 
     @PrimaryGeneratedColumn()
     id: string
 
-    @Column()
+    @Column({ unique:true })
     email: string
     
     @Column()
@@ -20,10 +20,6 @@ export class User {
 
     @UpdateDateColumn()
     updatedat: Date
-
-
-
-
     
 
 
