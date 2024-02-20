@@ -4,7 +4,7 @@ import { Column , Entity , PrimaryGeneratedColumn , CreateDateColumn , UpdateDat
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: string
+    id: number
 
     @Column({ unique:true })
     email: string
@@ -21,6 +21,6 @@ export class User {
     @UpdateDateColumn()
     updatedat: Date
     
-
+    
 
 }

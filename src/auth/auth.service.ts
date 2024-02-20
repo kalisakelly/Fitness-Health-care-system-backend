@@ -65,4 +65,7 @@ export class AuthService {
     
 
   }
+  async findOne(condition: any): Promise<User> {
+    return this.usersrepository.findOne(condition);
+}
 }
