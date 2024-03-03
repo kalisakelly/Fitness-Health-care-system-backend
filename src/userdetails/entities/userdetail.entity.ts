@@ -8,7 +8,25 @@ export class Userdetail {
     Id: string;
     @Column()
     name: string;
-    @OneToOne((type)=>User)
-    @JoinColumn({name:"UserID"})
-    user:User
+
+    @OneToOne(() => User, user => user.userDetails)
+    @JoinColumn()
+    user: User;
+
+    @Column()
+    height:number
+
+    @Column()
+    mass:number
+
+    @Column()
+    age:number
+
+    @Column()
+    BMI:number
+
+    @Column()
+    healthstatus:string
+    
+
 }

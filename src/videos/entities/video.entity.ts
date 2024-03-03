@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Category } from "./categories.enum";
 
 @Entity()
 export class Video {
@@ -8,6 +9,16 @@ export class Video {
 
     @Column()
     name:string;
+
+    @Column()
+    file:string;
+
+    @Column({type:'enum',enum:Category,default:Category.Yoga})
+    category:Category;
+
+    @Column()
+    description:string;
+
     
 
 }

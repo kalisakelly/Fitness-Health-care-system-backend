@@ -39,7 +39,7 @@ export class AuthService {
     const savedUser = await this.usersrepository.save(newUser);
   
     // Generate JWT token
-    const token = this.jwtService.sign({ id: savedUser.id });
+    const token = this.jwtService.sign({ id: savedUser.userid });
   
     return { token };
   }
@@ -59,7 +59,7 @@ export class AuthService {
     if (!Ispasswordsmatch)
     throw new UnauthorizedException('Invalid password')
   
-    const token = this.jwtService.sign({id: user.id})
+    const token = this.jwtService.sign({id: user.userid})
 
     return {token}
     

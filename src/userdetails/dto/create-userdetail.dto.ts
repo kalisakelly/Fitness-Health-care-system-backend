@@ -1,1 +1,4 @@
-export class CreateUserdetailDto {}
+import { IsNotEmpty,IsNegative,IsEmail } from "class-validator";
+export class CreateUserdetailDto {
+    
+}

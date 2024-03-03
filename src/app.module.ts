@@ -9,6 +9,7 @@ import { UserdetailsController } from './userdetails/userdetails.controller';
 import { UserdetailsModule } from './userdetails/userdetails.module';
 import { BlogModule } from './blog/blog.module';
 import { VideosModule } from './videos/videos.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 
 @Module({
@@ -26,9 +27,11 @@ import { VideosModule } from './videos/videos.module';
         autoLoadEntities:true,
         synchronize:true,
       }),
+      
 
 
     }),
+    MulterModule.register({dest:'./uploads'}),
     UsersModule,
     AuthModule,
     UserdetailsModule,
