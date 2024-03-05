@@ -10,6 +10,7 @@ import { UserdetailsModule } from './userdetails/userdetails.module';
 import { BlogModule } from './blog/blog.module';
 import { VideosModule } from './videos/videos.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { NutritionModule } from './nutrition/nutrition.module';
 
 
 @Module({
@@ -36,7 +37,8 @@ import { MulterModule } from '@nestjs/platform-express';
     AuthModule,
     UserdetailsModule,
     BlogModule,
-    VideosModule
+    VideosModule,
+    NutritionModule
     
   ],
   controllers: [AppController],

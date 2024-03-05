@@ -5,7 +5,7 @@ import { Category } from "./categories.enum";
 export class Video {
 
     @PrimaryGeneratedColumn()
-    Id: string;
+    Id: number;
 
     @Column()
     name:string;
@@ -19,6 +19,5 @@ export class Video {
     @Column()
     description:string;
 
-    
 
 }
