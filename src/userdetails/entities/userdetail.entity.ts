@@ -6,6 +6,7 @@ export class Userdetail {
 
     @PrimaryGeneratedColumn()
     Id: string;
+    
     @Column()
     name: string;
 
@@ -14,19 +15,86 @@ export class Userdetail {
     user: User;
 
     @Column()
-    height:number
+    height: number;
 
     @Column()
-    mass:number
+    mass: number;
 
     @Column()
-    age:number
+    age: number;
 
     @Column()
-    BMI:number
+    BMI: number;
 
     @Column()
-    healthstatus:string
-    
+    healthstatus: string;
+
+    // Additional Fields
+    @Column({ nullable: true }) // Gender
+    gender: string;
+
+    @Column({ type: 'date', nullable: true }) // Date of Birth
+    dateOfBirth: Date;
+
+    @Column({ nullable: true }) // Physical Activity Level
+    physicalActivityLevel: string;
+
+    @Column({ nullable: true }) // Dietary Preferences/Restrictions
+    dietaryPreferences: string;
+
+    @Column({ nullable: true }) // Medical History
+    medicalHistory: string;
+
+    @Column({ nullable: true }) // Fitness Goals
+    fitnessGoals: string;
+
+    @Column({ nullable: true }) // Current Fitness Level
+    currentFitnessLevel: string;
+
+    @Column({ nullable: true }) // Sleep Patterns
+    sleepPatterns: string;
+
+    @Column({ nullable: true }) // Stress Level
+    stressLevel: string;
+
+    @Column({ nullable: true }) // Body Measurements
+    waistCircumference: number;
+
+    @Column({ nullable: true })
+    hipCircumference: number;
+
+    @Column({ nullable: true })
+    bodyFatPercentage: number;
+
+    @Column({ nullable: true }) // Blood Pressure
+    bloodPressure: string;
+
+    @Column({ nullable: true }) // Cholesterol Levels
+    cholesterolLevels: string;
+
+    @Column({ nullable: true }) // Blood Sugar Levels
+    bloodSugarLevels: string;
+
+    @Column({ nullable: true }) // Fitness Assessment Results
+    fitnessAssessmentResults: string;
+
+    @Column({ nullable: true }) // Activity Tracking Data
+    activityTrackingData: string;
+
+    @Column({ nullable: true }) // Nutritional Intake
+    nutritionalIntake: string;
+
+    @Column({ nullable: true }) // Hydration Level
+    hydrationLevel: string;
+
+    @Column({ nullable: true }) // Mental Health Information
+    mentalHealthInfo: string;
+
+    @Column({ nullable: true }) // Injury History
+    injuryHistory: string;
+
+    @Column({ nullable: true }) // Social Support Network
+    socialSupportNetwork: string;
 
 }
+

@@ -1,11 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Category } from "./categories.enum";
+import { User } from "src/users/entities/user.entity";
 
 @Entity()
 export class Video {
 
     @PrimaryGeneratedColumn()
-    Id: number;
+    @ManyToOne(() => User, (user) => user.userid)
+    Id: User;
 
     @Column()
     name:string;
@@ -18,6 +20,19 @@ export class Video {
 
     @Column()
     description:string;
+
+    @CreateDateColumn()
+    createdate: Date
+
+    @UpdateDateColumn()
+    updatedate: Date
+
+    @ManyToOne(()=>User,(user)=>user.likedvideos)
+    Likedby:User
+
+    @Column()
+    UploadedBy:string
+
 
 
 }

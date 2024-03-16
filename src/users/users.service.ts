@@ -22,7 +22,7 @@ export class UsersService {
 
     
     const user = new User();
-    user.usernames=createUserDto.usernames;
+    user.username=createUserDto.username;
     user.email=createUserDto.email;
     user.password=createUserDto.password;
 
