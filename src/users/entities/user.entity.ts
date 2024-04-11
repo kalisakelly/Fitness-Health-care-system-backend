@@ -35,10 +35,10 @@ export class User {
     @OneToMany(() => Video, (video) => video.Id)
     Watchedvideos: Video[];
 
-    @Column()
+    @Column({nullable:true})
     profile: string;
 
-    @Column()
+    @Column({nullable:true})
     OTP: number;
 
     @OneToMany(() => Video, (video) => video.Likedby)

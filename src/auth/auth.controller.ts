@@ -29,6 +29,7 @@ export class AuthController {
 
     response.cookie('token', jwt ,{httpOnly:true})
 
+
     return {
       message:'success'
     }
