@@ -13,6 +13,9 @@ import { MulterModule } from '@nestjs/platform-express';
 import { NutritionModule } from './nutrition/nutrition.module';
 import { PostrepliesModule } from './postreplies/postreplies.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { EmailService } from './email/email.service';
+import { EmailController } from './email/email.controller';
+import { EmailModule } from './email/email.module';
 
 
 @Module({
@@ -42,10 +45,11 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     VideosModule,
     NutritionModule,
     PostrepliesModule,
-    CloudinaryModule
+    CloudinaryModule,
+    EmailModule
     
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, EmailController],
+  providers: [AppService, EmailService],
 })
 export class AppModule {}
