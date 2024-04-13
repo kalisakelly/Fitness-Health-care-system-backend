@@ -12,6 +12,7 @@ import { VideosModule } from './videos/videos.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { NutritionModule } from './nutrition/nutrition.module';
 import { PostrepliesModule } from './postreplies/postreplies.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 
 @Module({
@@ -40,7 +41,8 @@ import { PostrepliesModule } from './postreplies/postreplies.module';
     BlogModule,
     VideosModule,
     NutritionModule,
-    PostrepliesModule
+    PostrepliesModule,
+    CloudinaryModule
     
   ],
   controllers: [AppController],

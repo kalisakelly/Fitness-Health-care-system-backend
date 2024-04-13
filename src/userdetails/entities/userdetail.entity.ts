@@ -7,7 +7,7 @@ export class Userdetail {
     @PrimaryGeneratedColumn()
     Id: string;
     
-    @Column()
+    @Column({nullable:true})
     name: string;
 
     @OneToOne(() => User, user => user.userDetails)

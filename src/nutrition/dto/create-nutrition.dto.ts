@@ -7,7 +7,7 @@ export class CreateNutritionDto {
     name: string;
 
     @IsNotEmpty()
-    file: string;
+    image: string;
 
     @IsNotEmpty()
     description:string;

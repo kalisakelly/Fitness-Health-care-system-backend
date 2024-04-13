@@ -1,15 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CreateNutritionDto } from './dto/create-nutrition.dto';
 import { UpdateNutritionDto } from './dto/update-nutrition.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Nutrition } from './entities/nutrition.entity';
 
 @Injectable()
 export class NutritionService {
-  create(createNutritionDto: CreateNutritionDto) {
-    return 'This action adds a new nutrition';
+  constructor(@InjectRepository(Nutrition) private nutrirepo:Repository<Nutrition>){}
+
+
+  async create(createNutritionDto: CreateNutritionDto):Promise<Nutrition> {
+
+    const newnutr= this.nutrirepo.create(createNutritionDto)
+    
+    return  this.nutrirepo.save(newnutr);
   }
 
-  findAll() {
-    return `This action returns all nutrition`;
+  async findAll() {
+
+    return await this.nutrirepo.find();
   }
 
   findOne(id: number) {

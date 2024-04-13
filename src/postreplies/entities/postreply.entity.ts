@@ -10,9 +10,9 @@ export class Postreply {
     @Column()
     body:string
 
-    @Column()
+    @Column({nullable:true})
     post:number
 
-    @Column()
+    @Column({nullable:true})
     Commentedby:string
 }

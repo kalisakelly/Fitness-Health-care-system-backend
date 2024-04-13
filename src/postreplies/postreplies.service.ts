@@ -1,11 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePostreplyDto } from './dto/create-postreply.dto';
 import { UpdatePostreplyDto } from './dto/update-postreply.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Postreply } from './entities/postreply.entity';
 
 @Injectable()
 export class PostrepliesService {
-  create(createPostreplyDto: CreatePostreplyDto) {
-    return 'This action adds a new postreply';
+
+  constructor(@InjectRepository (Postreply) private postrepo:Repository<Postreply>){}
+
+  async create(createPostreplyDto: CreatePostreplyDto):Promise<Postreply> {
+    
+    const newpostreply = await this.postrepo.create(createPostreplyDto);
+
+    return this.postrepo.save(newpostreply);
   }
 
   findAll() {

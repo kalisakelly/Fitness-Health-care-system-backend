@@ -23,7 +23,7 @@ export class Nutrition {
     @UpdateDateColumn()
     updatedate: Date;
 
-    @Column()
+    @Column({nullable:true})
     image: string;
 
     @ManyToOne(() => User, user => user.nutrient)
