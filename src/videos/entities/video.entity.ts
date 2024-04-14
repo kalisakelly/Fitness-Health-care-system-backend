@@ -30,7 +30,7 @@ export class Video {
     @ManyToOne(()=>User,(user)=>user.likedvideos)
     Likedby:User
 
-    @Column()
+    @Column({nullable:true})
     UploadedBy:string
 
 
