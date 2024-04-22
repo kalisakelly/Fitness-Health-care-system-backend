@@ -6,8 +6,7 @@ import { AuthenticationGuard } from 'src/guards/authentication.guard';
 import { AuthorizationGuard } from 'src/guards/authorization.guard';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 
-@Roles('admin')
-@UseGuards(AuthenticationGuard,AuthorizationGuard)
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -22,7 +21,8 @@ export class UsersController {
     return user;
   }
   
-  
+  @Roles('admin')
+  @UseGuards(AuthenticationGuard,AuthorizationGuard)
   @Get()
   findAll() {
     return this.usersService.findAll();
