@@ -16,6 +16,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { EmailService } from './email/email.service';
 import { EmailController } from './email/email.controller';
 import { EmailModule } from './email/email.module';
+import { JwtService } from '@nestjs/jwt';
 
 
 @Module({
@@ -50,6 +51,8 @@ import { EmailModule } from './email/email.module';
     
   ],
   controllers: [AppController, EmailController],
-  providers: [AppService, EmailService],
+  providers: [
+    AppService,
+    EmailService],
 })
 export class AppModule {}
