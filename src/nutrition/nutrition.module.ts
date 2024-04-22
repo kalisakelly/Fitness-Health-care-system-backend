@@ -4,6 +4,8 @@ import { NutritionController } from './nutrition.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Nutrition } from './entities/nutrition.entity';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { AuthenticationGuard } from 'src/guards/authentication.guard';
+import { JwtService } from '@nestjs/jwt';
 
 
 
@@ -13,6 +15,6 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
     CloudinaryModule
   ],
   controllers: [NutritionController],
-  providers: [NutritionService],
+  providers: [NutritionService,JwtService],
 })
 export class NutritionModule {}

@@ -17,6 +17,7 @@ import { EmailService } from './email/email.service';
 import { EmailController } from './email/email.controller';
 import { EmailModule } from './email/email.module';
 import { JwtService } from '@nestjs/jwt';
+import { CacheModule } from '@nestjs/cache-manager';
 
 
 @Module({
@@ -34,9 +35,9 @@ import { JwtService } from '@nestjs/jwt';
         autoLoadEntities:true,
         synchronize:true,
       }),
-      
-
-
+    }),
+    CacheModule.register({
+      isGlobal: true, 
     }),
     MulterModule.register({dest:'./uploads'}),
     UsersModule,

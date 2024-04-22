@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, UseGuards, Req } from '@nestjs/common';
 import { NutritionService } from './nutrition.service';
 import { CreateNutritionDto } from './dto/create-nutrition.dto';
 import { UpdateNutritionDto } from './dto/update-nutrition.dto';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthenticationGuard } from 'src/guards/authentication.guard';
 
 
 
@@ -23,21 +24,31 @@ export class NutritionController {
   constructor(private readonly nutritionService: NutritionService) {}
 
   @Post()
+  @UseGuards(AuthenticationGuard)
   @UseInterceptors(FileInterceptor('image', { storage }))
   async create(
-    @UploadedFile()Image,
+    @UploadedFile() image,
     @Body('name') name: string,
     @Body('description') description: string,
-   ) {
+    @Req() req: any, // Inject the request object
+  ) {
+    // Extract the authenticated user from the request object
+    const user = req.user.id;
 
-      const newnutri = {
-        name,
-        description,
-        image:Image.filename,
-      }
-    const savenutri = await this.nutritionService.create(newnutri)
-    return {message:'New nutrition saved successfully!'};
+    // Create the nutrition entity with the associated user
+    const newNutrition = {
+      name,
+      description,
+      image: image.filename,
+      UploadedBy: user, // Associate the nutrition with the authenticated user
+    };
+
+    // Call the nutrition service to create the nutrition
+    await this.nutritionService.create(newNutrition);
+
+    return { message: 'New nutrition saved successfully!' };
   }
+
 
   @Get()
   findAll() {
