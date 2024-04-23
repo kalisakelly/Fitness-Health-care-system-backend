@@ -1,4 +1,4 @@
-import { Entity , Column , PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToMany ,  } from "typeorm";
+import { Entity , Column , PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, ManyToOne ,  } from "typeorm";
 import { Status } from "./status.enum";
 import { User } from "src/users/entities/user.entity";
 
@@ -20,14 +20,11 @@ export class Blog {
     @CreateDateColumn()
     createdat:Date
 
-    @Column()
-    createdby:string
-
     @UpdateDateColumn()
     updatedat:Date
 
-    @ManyToMany(()=>User,(user)=>user.Posts)
-    Postedby:User
+    @ManyToOne(()=>User,(user)=>user.Posts)
+    createdby:User
 
 
     

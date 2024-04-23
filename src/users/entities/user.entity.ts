@@ -56,7 +56,7 @@ export class User {
     @Column({ nullable: true }) // Emergency Contact Information
     emergencyContact: string;
 
-    @OneToMany(() => Blog, (blog) => blog.Postedby)
+    @OneToMany(() => Blog, (blog) => blog.createdby)
     Posts: Blog[];
 
     @OneToMany(()=>Video,(video)=>video.UploadedBy)

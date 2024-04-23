@@ -21,7 +21,7 @@ export class UsersController {
     return user;
   }
   
-  @Roles('admin')
+  @Roles(['admin'])
   @UseGuards(AuthenticationGuard,AuthorizationGuard)
   @Get()
   findAll() {

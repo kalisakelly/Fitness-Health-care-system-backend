@@ -10,16 +10,13 @@ export class BlogService {
   constructor(@InjectRepository(Blog) private blogrepository:Repository<Blog>){}
 
 
-  create(createBlogDto: CreateBlogDto) {
+  async create(createBlogDto: CreateBlogDto,user):Promise<Blog> {
 
-    const blog = new Blog()
-
-    blog.title=createBlogDto.title
-    blog.body=createBlogDto.body
-
-    return this.blogrepository.save(blog)
-    
-
+    const newblog = this.blogrepository.create({
+      ...createBlogDto,
+      createdby:user
+    });
+    return this.blogrepository.save(newblog) 
   }
 
   findAll() {

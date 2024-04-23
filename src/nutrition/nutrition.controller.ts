@@ -6,6 +6,8 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthenticationGuard } from 'src/guards/authentication.guard';
+import { AuthorizationGuard } from 'src/guards/authorization.guard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
 
 
@@ -20,11 +22,12 @@ const storage = diskStorage({
 });
 
 @Controller('nutrition')
+@UseGuards(AuthenticationGuard,AuthorizationGuard)
+@Roles(['admin','nutritionist'])
 export class NutritionController {
   constructor(private readonly nutritionService: NutritionService) {}
 
   @Post()
-  @UseGuards(AuthenticationGuard)
   @UseInterceptors(FileInterceptor('image', { storage }))
   async create(
     @UploadedFile() image,

@@ -29,12 +29,9 @@ export class AuthenticationGuard implements CanActivate {
 
         try {
             // Verify the token and decode its payload using the retrieved secret key
-            const decodedToken = this.jwtService.verify(token, { secret: this.jwtSecret });
-            
+            const decodedToken = this.jwtService.verify(token, { secret: this.jwtSecret });  
             // Attach the decoded user information to the request for further processing
-            request.user = decodedToken;
-            console.log(request.user);
-            
+            request.user = decodedToken;            
             // Allow access to the protected route
             return true;
         } catch (error) {

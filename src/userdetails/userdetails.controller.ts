@@ -31,4 +31,11 @@ export class UserdetailsController {
   remove(@Param('id') id: string) {
     return this.userdetailsService.remove(+id);
   }
+
+  @Post('calculate-bmi') // Endpoint to calculate BMI
+  calculateBMI(@Body() body: { height: number, mass: number }) {
+    const { height, mass } = body;
+    const bmi = this.userdetailsService.bodyBMI(height, mass);
+    return { bmi }; // Return the calculated BMI
+  }
 }
