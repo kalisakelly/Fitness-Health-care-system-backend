@@ -5,7 +5,7 @@ import { OneToOne, Column, Entity , PrimaryGeneratedColumn , JoinColumn } from "
 export class Userdetail {
 
     @PrimaryGeneratedColumn()
-    Id: string;
+    id: number;
     
     @Column({nullable:true})
     name: string;

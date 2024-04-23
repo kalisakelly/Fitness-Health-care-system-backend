@@ -1,9 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, BaseEntity } from "typeorm";
 import { NutrCategory } from "./nucategory.enum";
 import { User } from "src/users/entities/user.entity";
 
 @Entity()
-export class Nutrition {
+export class Nutrition extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;

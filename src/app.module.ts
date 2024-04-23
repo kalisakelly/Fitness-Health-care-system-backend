@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -18,6 +18,7 @@ import { EmailController } from './email/email.controller';
 import { EmailModule } from './email/email.module';
 import { JwtService } from '@nestjs/jwt';
 import { CacheModule } from '@nestjs/cache-manager';
+import { Loggingmiddleware } from './middlewares/Logging.middleware';
 
 
 @Module({

@@ -44,7 +44,7 @@ export class NutritionController {
     };
 
     // Call the nutrition service to create the nutrition
-    await this.nutritionService.create(newNutrition);
+    await this.nutritionService.create(newNutrition,user);
 
     return { message: 'New nutrition saved successfully!' };
   }

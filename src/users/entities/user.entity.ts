@@ -32,7 +32,7 @@ export class User {
     @OneToOne(() => Userdetail, userDetails => userDetails.user)
     userDetails: Userdetail;
 
-    @OneToMany(() => Video, (video) => video.Id)
+    @OneToOne(() => Video, (video) => video.watchedby)
     Watchedvideos: Video[];
 
     @Column({nullable:true})
@@ -58,4 +58,7 @@ export class User {
 
     @OneToMany(() => Blog, (blog) => blog.Postedby)
     Posts: Blog[];
+
+    @OneToMany(()=>Video,(video)=>video.UploadedBy)
+    videosupload:Video[];
 }

@@ -1,13 +1,13 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Category } from "./categories.enum";
 import { User } from "src/users/entities/user.entity";
+import { UserConfig } from "vite";
 
 @Entity()
 export class Video {
 
     @PrimaryGeneratedColumn()
-    @ManyToOne(() => User, (user) => user.userid)
-    Id: User;
+    id: number;
 
     @Column()
     name:string;
@@ -30,8 +30,11 @@ export class Video {
     @ManyToOne(()=>User,(user)=>user.likedvideos)
     Likedby:User
 
-    @Column({nullable:true})
-    UploadedBy:string
+    @ManyToOne(()=>User,(user)=>user.videosupload)
+    UploadedBy:User
+
+    @OneToOne(()=>User,(user)=>user.Watchedvideos)
+    watchedby:User
 
 
 

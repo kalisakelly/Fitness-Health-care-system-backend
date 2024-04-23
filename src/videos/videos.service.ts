@@ -8,35 +8,40 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class VideosService {
   
-  constructor(@InjectRepository(Video) private videorepository:Repository<Video>){}
+  constructor(@InjectRepository(Video) private videorepository: Repository<Video>){}
   
-  async create(createVideoDto: CreateVideoDto):Promise<Video> {
-
-    const video = new Video();
-
-    video.name=createVideoDto.name;
-    video.description=createVideoDto.description;
-    video.file=createVideoDto.file;
-  
-
-    return await this.videorepository.save(video);
-
-    
+  async create(createVideoDto: CreateVideoDto): Promise<Video> {
+    const newVideo = this.videorepository.create(createVideoDto);
+    return this.videorepository.save(newVideo);
   }
 
-  findAll() {
-    return `This action returns all videos`;
+  async findAll(): Promise<Video[]> {
+    return this.videorepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} video`;
+  async findOne(id: number): Promise<Video> {
+    return this.videorepository.findOneBy({id});
   }
 
-  update(id: number, updateVideoDto: UpdateVideoDto) {
-    return `This action updates a #${id} video`;
+  async update(id: number, updateVideoDto: UpdateVideoDto): Promise<Video> {
+    const video = await this.videorepository.findOneBy({id});
+    if (!video) {
+      throw new Error(`Video with id ${id} not found`);
+    }
+    // Update video properties based on updateVideoDto
+    // Example: video.name = updateVideoDto.name;
+    // Update other properties as needed
+    return this.videorepository.save({
+      ...video,
+      ...updateVideoDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} video`;
+  async remove(id: number): Promise<void> {
+    const video = await this.videorepository.findOneBy({id});
+    if (!video) {
+      throw new Error(`Video with id ${id} not found`);
+    }
+    await this.videorepository.remove(video);
   }
 }
