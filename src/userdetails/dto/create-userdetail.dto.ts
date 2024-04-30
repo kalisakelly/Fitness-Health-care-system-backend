@@ -40,9 +40,9 @@ export class CreateUserdetailDto {
     @IsIn([`Good`,`Poor`,`Excellent`],{message:`heath status not defined`})
     healthstatus:string
 
-    @IsString()
-    @IsOptional()
-    physicalActivityLevel?: string;
+    // @IsString()
+    // @IsOptional()
+    // physicalActivityLevel?: P;
   
     @IsString()
     @IsOptional()

@@ -1,5 +1,6 @@
 import { User } from "src/users/entities/user.entity";
 import { OneToOne, Column, Entity , PrimaryGeneratedColumn , JoinColumn } from "typeorm";
+import { Physicalactivities } from "./physicalactivities.enum";
 
 @Entity('Userdetails')
 export class Userdetail {
@@ -23,7 +24,7 @@ export class Userdetail {
     @Column()
     age: number;
 
-    @Column()
+    @Column({nullable:true})
     BMI: number;
 
     @Column()
@@ -36,8 +37,8 @@ export class Userdetail {
     @Column({ type: 'date', nullable: true }) // Date of Birth
     dateOfBirth: Date;
 
-    @Column({ nullable: true }) // Physical Activity Level
-    physicalActivityLevel: string;
+    @Column({ type:'enum' , enum:Physicalactivities,default:Physicalactivities.Moderately_active_lifestyle }) // Physical Activity Level
+    physicalActivityLevel: Physicalactivities;
 
     @Column({ nullable: true }) // Dietary Preferences/Restrictions
     dietaryPreferences: string;
@@ -95,6 +96,8 @@ export class Userdetail {
 
     @Column({ nullable: true }) // Social Support Network
     socialSupportNetwork: string;
+
+    
 
 }
 
