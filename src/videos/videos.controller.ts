@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors,Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors,Req, Res, Header } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -44,6 +44,8 @@ export class VideosController {
     return this.videosService.findAll();
   }
   @Get(':name/stream')
+  @Header('Accept-Ranges', 'bytes')
+	@Header('Content-Type', 'video/mp4')
   async streamVideo(@Param('name') name: string, @Res() response: Response, @Req() request: Request) {
     return this.videosService.streamVideo(name, response, request);
   }

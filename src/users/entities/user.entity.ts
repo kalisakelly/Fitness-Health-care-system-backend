@@ -4,6 +4,7 @@ import { Userdetail } from 'src/userdetails/entities/userdetail.entity';
 import { Video } from 'src/videos/entities/video.entity';
 import { Nutrition } from 'src/nutrition/entities/nutrition.entity';
 import { Blog } from 'src/blog/entities/blog.entity';
+import { Postreply } from 'src/postreplies/entities/postreply.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -61,4 +62,7 @@ export class User extends BaseEntity {
 
     @OneToMany(()=>Video,(video)=>video.UploadedBy)
     videosupload:Video[];
+
+    @OneToMany(()=>Postreply,(postreply)=>postreply.Commentedby)
+    postreply:Postreply[];
 }

@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Blog } from "src/blog/entities/blog.entity";
+import { User } from "src/users/entities/user.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity()
@@ -10,9 +12,13 @@ export class Postreply {
     @Column()
     body:string
 
-    @Column({nullable:true})
-    post:number
+    
+    @ManyToOne(() => User,(user)=> user.postreply)
+    Commentedby:User
 
-    @Column({nullable:true})
-    Commentedby:string
+    @ManyToOne(() => Blog, (blog) => blog.postreply)
+    blog: Blog;
+
+    
+
 }

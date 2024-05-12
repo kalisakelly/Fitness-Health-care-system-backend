@@ -1,20 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, NotFoundException } from '@nestjs/common';
 import { PostrepliesService } from './postreplies.service';
 import { CreatePostreplyDto } from './dto/create-postreply.dto';
 import { UpdatePostreplyDto } from './dto/update-postreply.dto';
+import { AuthenticationGuard } from 'src/guards/authentication.guard';
 
 @Controller('postreplies')
+@UseGuards(AuthenticationGuard)
 export class PostrepliesController {
   constructor(private readonly postrepliesService: PostrepliesService) {}
 
-  @Post()
-  create(@Body() createPostreplyDto: CreatePostreplyDto) {
-    return this.postrepliesService.create(createPostreplyDto);
+  @Post(':id') // Expecting blogId in the URL
+  async create(@Param('id') id: string, @Body() createPostreplyDto: CreatePostreplyDto) {
+    try {
+      const createdPostReply = await this.postrepliesService.create(+id, createPostreplyDto);
+      return createdPostReply;
+    } catch (error) {
+      // Handle errors gracefully
+      throw new NotFoundException(error.message);
+    }
   }
 
-  @Get()
-  findAll() {
-    return this.postrepliesService.findAll();
+  @Get(':blogId') // Expecting blogId in the URL
+  findAllByBlogId(@Param('blogId') blogId: string) {
+    return this.postrepliesService.findAllByBlogId(+blogId);
   }
 
   @Get(':id')
@@ -23,12 +31,12 @@ export class PostrepliesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostreplyDto: UpdatePostreplyDto) {
-    return this.postrepliesService.update(+id, updatePostreplyDto);
+  update(@Param('id') id: string, @Body() updatePostreplyDto: UpdatePostreplyDto, @Req() req) {
+    return this.postrepliesService.update(+id, updatePostreplyDto, req.user); // Pass authenticated user to service
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postrepliesService.remove(+id);
+  remove(@Param('id') id: string, @Req() req) {
+    return this.postrepliesService.remove(+id, req.user); // Pass authenticated user to service
   }
 }
