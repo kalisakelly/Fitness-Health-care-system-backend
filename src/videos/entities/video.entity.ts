@@ -13,13 +13,16 @@ export class Video {
     name:string;
 
     @Column()
-    file:string;
+    url:string;
 
     @Column({type:'enum',enum:Category,default:Category.Yoga})
     category:Category;
 
     @Column()
     description:string;
+
+    @Column({nullable:true})
+    coverImage: string;
 
     @CreateDateColumn()
     createdate: Date

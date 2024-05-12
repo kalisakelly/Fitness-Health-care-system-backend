@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, OneToMany, BaseEntity } from 'typeorm';
 import { Role } from './role.enum';
 import { Userdetail } from 'src/userdetails/entities/userdetail.entity';
 import { Video } from 'src/videos/entities/video.entity';
@@ -6,9 +6,9 @@ import { Nutrition } from 'src/nutrition/entities/nutrition.entity';
 import { Blog } from 'src/blog/entities/blog.entity';
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
 
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn()
     userid: number;
 
     @Column({ unique: true })

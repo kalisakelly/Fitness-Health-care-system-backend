@@ -4,6 +4,8 @@ import { UpdateUserdetailDto } from './dto/update-userdetail.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Userdetail } from './entities/userdetail.entity';
+import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class UserdetailsService {
@@ -28,6 +30,10 @@ export class UserdetailsService {
 
   async findOne(id: number): Promise<Userdetail> {
     return this.userdetailrepository.findOneBy({id});
+  }
+ 
+  async findByUserId(userId: number): Promise<Userdetail[]> {
+    return this.userdetailrepository.find({ where: { id: userId } });
   }
 
   async update(
@@ -57,12 +63,27 @@ export class UserdetailsService {
     await this.userdetailrepository.remove(userdetail);
   }
 
-  // bodyBMI(height: number, mass: number): number {
-  //   // Calculate BMI based on height and mass
-  //   // Formula: BMI = mass (kg) / (height (m) * height (m))
-  //   const heightInMeters = height / 100; // Convert height from cm to meters
-  //   const bmi = mass / (heightInMeters * heightInMeters);
-  //   // Return BMI rounded to two decimal places
-  //   return Math.round(bmi * 100) / 100;
+
+
+  // async getUserBMI(userid:number):Promise<User>{
+
+  //   const user = await this.userservice.findOne(userid);
+  //   if(!user){
+  //     throw new Error ('user not found')
+  //   }
+
+  //   const BMI = this.bodyBMI()
+
+
+  //   return user
+
   // }
+  bodyBMI(height: number, mass: number): number {
+    // Calculate BMI based on height and mass
+    // Formula: BMI = mass (kg) / (height (m) * height (m))
+    const heightInMeters = height / 100; // Convert height from cm to meters
+    const bmi = mass / (heightInMeters * heightInMeters);
+    // Return BMI rounded to two decimal places
+    return Math.round(bmi * 100) / 100;
+  }
 }

@@ -6,7 +6,7 @@ export class CreateVideoDto {
     name: string;
 
     @IsNotEmpty()
-    file: string;
+    url: string;
 
     @IsNotEmpty()
     description:string;

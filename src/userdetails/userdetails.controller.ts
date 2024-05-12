@@ -3,6 +3,7 @@ import { UserdetailsService } from './userdetails.service';
 import { CreateUserdetailDto } from './dto/create-userdetail.dto';
 import { UpdateUserdetailDto } from './dto/update-userdetail.dto';
 import { AuthenticationGuard } from 'src/guards/authentication.guard';
+import { Userdetail } from './entities/userdetail.entity';
 
 @UseGuards(AuthenticationGuard)
 @Controller('userdetails')
@@ -36,6 +37,12 @@ export class UserdetailsController {
   remove(@Param('id') id: string) {
     return this.userdetailsService.remove(+id);
   }
+
+  @Get('/user/:userId')
+  async getUserdetailsByUserId(@Param('userId') userId: number): Promise<Userdetail[]> {
+    return this.userdetailsService.findByUserId(userId);
+  }
+
 
   // @Post('calculate-bmi') 
   // calculateBMI(@Body() body: { height: number, mass: number }) {

@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { object } from '@hapi/joi';
 
 @Injectable()
 export class UsersService {
@@ -34,15 +35,22 @@ export class UsersService {
     return this.userrepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(userid: number) {
+    return this.userrepository.findOneBy({userid})
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
+  async updaterole(userid:number, updateUserDto:UpdateUserDto) : Promise<User>{
+
+    const user = await this.findOne(userid);
+    Object.assign(user, updateUserDto)
+    return this.userrepository.save(user)
+  }
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+
 }

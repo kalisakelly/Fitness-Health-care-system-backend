@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors,Req, Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -6,6 +6,8 @@ import { VideosService } from './videos.service';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { Video } from './entities/video.entity';
+import { Request, Response } from 'express';
+
 
 
 const storage = diskStorage({
@@ -22,16 +24,16 @@ export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', { storage }))
+  @UseInterceptors(FileInterceptor('url', { storage }))
   async uploadFile(
-    @UploadedFile() file,
+    @UploadedFile() url,
     @Body('name') name: string,
     @Body('description') description: string,
   ) {
     const createVideoDto = {
       name,
       description,
-      file: file.filename, // Assuming file.filename contains the filename
+      url: url.filename, // Assuming file.filename contains the filename
     };
     
     const savedVideo = await this.videosService.create(createVideoDto);
@@ -41,11 +43,11 @@ export class VideosController {
   findAll() {
     return this.videosService.findAll();
   }
-  // @Post()
-  // async create(@Body() video: Video): Promise<Video> {
-  //   return await this.videosService.create(video);
-  // }
-
+  @Get(':name/stream')
+  async streamVideo(@Param('name') name: string, @Res() response: Response, @Req() request: Request) {
+    return this.videosService.streamVideo(name, response, request);
+  }
+ 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.videosService.findOne(+id);

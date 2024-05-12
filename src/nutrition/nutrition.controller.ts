@@ -23,7 +23,7 @@ const storage = diskStorage({
 
 @Controller('nutrition')
 @UseGuards(AuthenticationGuard,AuthorizationGuard)
-@Roles(['admin','nutritionist'])
+@Roles('admin','nutritionist')
 export class NutritionController {
   constructor(private readonly nutritionService: NutritionService) {}
 

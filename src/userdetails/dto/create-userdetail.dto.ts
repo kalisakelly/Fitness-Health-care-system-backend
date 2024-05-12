@@ -18,17 +18,15 @@ export class CreateUserdetailDto {
     @IsOptional()
     mass:number
 
-    @IsNumber()
-    @IsNotEmpty()
-    @Min(0,{message:'Age cannot be negative'})
-    @IsOptional()
-    age:number
+    // @IsNumber()
+    // @IsNotEmpty()
+    // @Min(0,{message:'Age cannot be negative'})
+    // @IsOptional()
+    // age:number
 
     @IsNumber()
-    @IsNotEmpty()
     @Min(0,{message:'BMI cannot be negative'})
     @IsOptional()
-    
     BMI:number
 
     @IsString()

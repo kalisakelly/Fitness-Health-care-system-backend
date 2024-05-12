@@ -7,6 +7,7 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { AuthenticationGuard } from 'src/guards/authentication.guard';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
 
 
 
@@ -15,9 +16,10 @@ import { User } from 'src/users/entities/user.entity';
     TypeOrmModule.forFeature([
       Nutrition,
       User]),
-    CloudinaryModule
+    CloudinaryModule,
+    
   ],
   controllers: [NutritionController],
-  providers: [NutritionService,JwtService],
+  providers: [NutritionService,JwtService,UsersService],
 })
 export class NutritionModule {}

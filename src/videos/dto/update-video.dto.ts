@@ -8,7 +8,7 @@ export class UpdateVideoDto extends PartialType(CreateVideoDto) {
     name: string;
 
     @IsNotEmpty()
-    file: string;
+    url: string;
 
     @IsNotEmpty()
     description:string;

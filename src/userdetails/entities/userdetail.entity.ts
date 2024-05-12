@@ -21,21 +21,21 @@ export class Userdetail {
     @Column()
     mass: number;
 
-    @Column()
+    @Column({nullable:true})
     age: number;
 
     @Column({nullable:true})
     BMI: number;
 
-    @Column()
+    @Column({nullable:true})
     healthstatus: string;
 
     // Additional Fields
     @Column({ nullable: true }) // Gender
     gender: string;
 
-    @Column({ type: 'date', nullable: true }) // Date of Birth
-    dateOfBirth: Date;
+    @Column({  nullable: true }) // Date of Birth
+    yearofbirth: number;
 
     @Column({ type:'enum' , enum:Physicalactivities,default:Physicalactivities.Moderately_active_lifestyle }) // Physical Activity Level
     physicalActivityLevel: Physicalactivities;
