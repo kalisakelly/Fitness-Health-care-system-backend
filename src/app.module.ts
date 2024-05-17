@@ -51,6 +51,6 @@ import { MailerService } from '@nestjs-modules/mailer';
     CloudinaryModule,
   ],
   controllers: [AppController, EmailController],
-  providers: [AppService,],
+  providers: [AppService,EmailService],
 })
 export class AppModule {}
