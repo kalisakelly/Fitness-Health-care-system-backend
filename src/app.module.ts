@@ -15,10 +15,10 @@ import { PostrepliesModule } from './postreplies/postreplies.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { EmailService } from './email/email.service';
 import { EmailController } from './email/email.controller';
-import { EmailModule } from './email/email.module';
 import { JwtService } from '@nestjs/jwt';
 import { CacheModule } from '@nestjs/cache-manager';
 import { Loggingmiddleware } from './middlewares/Logging.middleware';
+import { MailerService } from '@nestjs-modules/mailer';
 
 
 @Module({
@@ -49,12 +49,8 @@ import { Loggingmiddleware } from './middlewares/Logging.middleware';
     NutritionModule,
     PostrepliesModule,
     CloudinaryModule,
-    EmailModule
-    
   ],
   controllers: [AppController, EmailController],
-  providers: [
-    AppService,
-    EmailService],
+  providers: [AppService,],
 })
 export class AppModule {}
