@@ -19,6 +19,8 @@ import { JwtService } from '@nestjs/jwt';
 import { CacheModule } from '@nestjs/cache-manager';
 import { Loggingmiddleware } from './middlewares/Logging.middleware';
 import { MailerService } from '@nestjs-modules/mailer';
+import { CalculatorsService } from './calculators/calculators.service';
+import { CalculatorsModule } from './calculators/calculators.module';
 
 
 @Module({
@@ -49,8 +51,9 @@ import { MailerService } from '@nestjs-modules/mailer';
     NutritionModule,
     PostrepliesModule,
     CloudinaryModule,
+    CalculatorsModule,
   ],
   controllers: [AppController, EmailController],
-  providers: [AppService,EmailService],
+  providers: [AppService,EmailService, CalculatorsService],
 })
 export class AppModule {}
