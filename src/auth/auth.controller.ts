@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UnauthorizedException, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { Response,Request } from 'express';
 import {JwtService} from "@nestjs/jwt";
+import { VerifyEmailDto } from './dto/VerifyEmail.dto';
 
 type NewType = SignUpDto;
 
@@ -15,9 +16,14 @@ export class AuthController {
 
     ) {}
 
-  @Post('/signup')
-  async signUp(@Body() signUpDto: NewType): Promise<{ token: string }> {
-    return this.authService.signup(signUpDto);
+  @Post('signup')
+  async signup(@Body() signupDto: SignUpDto) {
+      return this.authService.signup(signupDto);
+  }
+
+  @Post('verify-email')
+  async verifyEmail(@Query('token') token: string) {
+    return this.authService.verifyEmail(token);
   }
 
   @Post('/login')

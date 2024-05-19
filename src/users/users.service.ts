@@ -53,4 +53,12 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
 
+  async findByVerificationToken(token: string): Promise<User> {
+    return this.userrepository.findOneBy({ emailVerificationToken: token });
+  }
+
+  async findByPasswordResetToken(token: string): Promise<User> {
+    return this.userrepository.findOneBy({ passwordResetToken: token });
+  }
+
 }

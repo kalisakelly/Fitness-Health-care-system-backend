@@ -39,8 +39,18 @@ export class User extends BaseEntity {
     @Column({nullable:true})
     profile: string;
 
-    @Column({nullable:true})
-    OTP: number;
+    @Column({ nullable: true })
+    emailVerificationToken: string;
+
+    
+    @Column({ nullable: true })
+    passwordResetToken: string;
+
+    @Column({ default: false })
+    isEmailVerified: boolean;
+
+    @Column({ nullable: true })
+    passwordResetExpires: Date;
 
     @OneToMany(() => Video, (video) => video.Likedby)
     likedvideos: Video[];

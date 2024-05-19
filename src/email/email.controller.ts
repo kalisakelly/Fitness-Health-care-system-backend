@@ -8,17 +8,17 @@ import * as nodemailer from "nodemailer";
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
-  @Post('/sendEmail')
-  async sendMail(): Promise<any> {
-    try {
-      const result = await this.emailService.sendActivationEmail(
-        "kalisakelly@icloud.com",
-        "Kelly",
-        "123435424"
-      );
-      return { success: true, message: 'Email sent successfully', result };
-    } catch (error) {
-      return { success: false, message: 'Failed to send email', error };
-    }
-  }
+  // @Post('/sendEmail')
+  // async sendMail(): Promise<any> {
+  //   try {
+  //     const result = await this.emailService.sendActivationEmail(
+  //       "kalisakelly@icloud.com",
+  //       "Kelly",
+  //       "123435424"
+  //     );
+  //     return { success: true, message: 'Email sent successfully', result };
+  //   } catch (error) {
+  //     return { success: false, message: 'Failed to send email', error };
+  //   }
+  // }
 }
