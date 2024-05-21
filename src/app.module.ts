@@ -18,7 +18,7 @@ import { EmailController } from './email/email.controller';
 import { JwtService } from '@nestjs/jwt';
 import { CacheModule } from '@nestjs/cache-manager';
 import { Loggingmiddleware } from './middlewares/Logging.middleware';
-import { MailerService } from '@nestjs-modules/mailer';
+import { SessionMiddleware } from './middlewares/session.middleware';
 import { CalculatorsService } from './calculators/calculators.service';
 import { CalculatorsModule } from './calculators/calculators.module';
 
@@ -56,4 +56,10 @@ import { CalculatorsModule } from './calculators/calculators.module';
   controllers: [AppController, EmailController],
   providers: [AppService,EmailService, CalculatorsService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(SessionMiddleware)
+      .forRoutes('*');
+  }
+}

@@ -1,39 +1,28 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { Observable } from "rxjs";
-import { ROLES_KEY } from "src/auth/decorator/roles.decorator";
-import { UsersService } from "src/users/users.service";
-
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 
 @Injectable()
+export class AuthorizationGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
 
-export class AuthorizationGuard implements CanActivate{
+  canActivate(context: ExecutionContext): boolean {
+    const roles = this.reflector.get<string[]>('roles', context.getHandler());
+    if (!roles) {
+      return true; // No roles required for this route
+    }
 
-    constructor(
-        private reflector:Reflector,
-        private useservice:UsersService
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
 
-    ){}
+    if (!user || !user.roles) {
+      throw new UnauthorizedException('User roles are not defined');
+    }
 
+    const hasRole = () => user.roles.some((role) => roles.includes(role));
+    if (!hasRole()) {
+      throw new UnauthorizedException('You do not have the required roles');
+    }
 
-    async canActivate(context: ExecutionContext): Promise<boolean>  {
-
-        const request = context.switchToHttp().getRequest();
-        const roles= this.reflector.get<string[]>(ROLES_KEY,context.getHandler());
-        
-        if(request?.user){
-            
-            const {id} = request.user;
-            
-            const user = await this.useservice.findOne(id)
-
-            return roles.includes(user.role)
-        }
-
-        return false
-
-    }  
-
-   
-
+    return true;
+  }
 }

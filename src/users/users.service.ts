@@ -39,8 +39,8 @@ export class UsersService {
     return this.userrepository.findOneBy({userid})
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(userId: number, user: Partial<User>): Promise<void> {
+    await this.userrepository.update(userId, user);
   }
 
   async updaterole(userid:number, updateUserDto:UpdateUserDto) : Promise<User>{

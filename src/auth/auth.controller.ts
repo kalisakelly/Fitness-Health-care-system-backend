@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UnauthorizedException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UnauthorizedException, Query, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { Response,Request } from 'express';
 import {JwtService} from "@nestjs/jwt";
 import { VerifyEmailDto } from './dto/VerifyEmail.dto';
+import { PasswordResetVerificationDto } from './dto/passwordreset.dto';
+import { PasswordResetDto } from './dto/create-auth.dto';
+import { AuthenticationGuard } from 'src/guards/authentication.guard';
 
 type NewType = SignUpDto;
 
@@ -41,28 +44,35 @@ export class AuthController {
     }
     
   }
-
+  @UseGuards(AuthenticationGuard)
   @Get('user')
-    async user(@Req() request: Request) {
-        try {
-            const cookie = request.cookies['jwt'];
+  async user(@Req() request: Request) {
+    try {
+      const cookie = request.cookies['jwt'];
 
-            const data = await this.jwtService.verifyAsync(cookie);
+      if (!cookie) {
+        throw new UnauthorizedException('JWT cookie is missing');
+      }
 
-            if (!data) {
-                throw new UnauthorizedException();
-            }
+      const data = await this.jwtService.verifyAsync(cookie);
 
-            const user = await this.authService.findOne({id: data['id']});
+      if (!data) {
+        throw new UnauthorizedException('Invalid JWT token');
+      }
 
-            const {password, ...result} = user;
+      const user = await this.authService.findOne({ id: data.userid });
 
-            return result;
-        } catch (e) {
-            throw new UnauthorizedException();
-        }
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      const { password, ...result } = user;
+
+      return result;
+    } catch (e) {
+      throw new UnauthorizedException('Unauthorized access');
     }
-
+  }
     @Post('logout')
     async logout(@Res({passthrough: true}) response: Response) {
         response.clearCookie('jwt');
@@ -71,5 +81,25 @@ export class AuthController {
             message: 'success'
         }
     }
+
+    @Post('reset')
+    async resetPassword(@Body() passwordResetVerificationDto: PasswordResetVerificationDto): Promise<{ message: string }> {
+    try {
+      const result = await this.authService.resetPassword(passwordResetVerificationDto);
+      return result;
+    } catch (error) {
+      throw new HttpException(error.message, error.status || HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Post('request-reset')
+  async requestPasswordReset(@Body() passwordResetDto: PasswordResetDto): Promise<{ message: string }> {
+    try {
+      const result = await this.authService.requestPasswordReset(passwordResetDto);
+      return result;
+    } catch (error) {
+      throw new HttpException(error.message, error.status || HttpStatus.BAD_REQUEST);
+    }
+  }
 
 }

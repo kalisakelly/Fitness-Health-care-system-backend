@@ -12,6 +12,8 @@ import { User } from './entities/user.entity';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(AuthenticationGuard,AuthorizationGuard)
+  @Roles('admin')
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
@@ -43,6 +45,9 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+  
+  @UseGuards(AuthenticationGuard,AuthorizationGuard)
+  @Roles('admin')
   @Patch(':userid/role')
   async updaterole(@Param('userid') userid: number, @Body() updateUserDto: UpdateUserDto): Promise<User> {
     return this.usersService.updaterole(userid, updateUserDto);
