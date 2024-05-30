@@ -65,25 +65,32 @@ export class UserdetailsService {
 
 
 
-  // async getUserBMI(userid:number):Promise<User>{
+  getNutritionRecommendation(userDetail: Userdetail): string {
+    const { healthstatus, dietaryPreferences, age } = userDetail;
+    
+    if (healthstatus === 'Underweight') {
+        return 'High-calorie diet with nutrient-dense foods';
+    } else if (healthstatus === 'Healthy weight') {
+        return 'Balanced diet with a mix of all food groups';
+    } else if (healthstatus === 'Overweight' || healthstatus === 'Obesity') {
+        return 'Low-calorie diet with a focus on whole foods';
+    } else {
+        return 'General healthy diet';
+    }
+}
 
-  //   const user = await this.userservice.findOne(userid);
-  //   if(!user){
-  //     throw new Error ('user not found')
-  //   }
+getExerciseRecommendation(userDetail: Userdetail): string {
+    const { fitnessGoals, currentFitnessLevel, physicalActivityLevel } = userDetail;
 
-  //   const BMI = this.bodyBMI()
+    if (fitnessGoals.includes('weight loss')) {
+        return 'Combination of cardio and strength training, at least 150 minutes of moderate activity per week';
+    } else if (fitnessGoals.includes('muscle gain')) {
+        return 'Strength training exercises targeting all major muscle groups, 3-4 times per week';
+    } else if (fitnessGoals.includes('endurance')) {
+        return 'Cardio exercises such as running, cycling, or swimming, gradually increasing intensity';
+    } else {
+        return 'General fitness regime with a mix of cardio, strength, and flexibility exercises';
+    }
+}
 
-
-  //   return user
-
-  // }
-  bodyBMI(height: number, mass: number): number {
-    // Calculate BMI based on height and mass
-    // Formula: BMI = mass (kg) / (height (m) * height (m))
-    const heightInMeters = height / 100; // Convert height from cm to meters
-    const bmi = mass / (heightInMeters * heightInMeters);
-    // Return BMI rounded to two decimal places
-    return Math.round(bmi * 100) / 100;
-  }
 }

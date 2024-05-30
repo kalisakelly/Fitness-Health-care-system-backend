@@ -1,10 +1,9 @@
-import { User } from "src/users/entities/user.entity";
-import { OneToOne, Column, Entity , PrimaryGeneratedColumn , JoinColumn } from "typeorm";
-import { Physicalactivities } from "./physicalactivities.enum";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, AfterInsert, AfterUpdate } from 'typeorm';
+import { User } from '../../users/entities/user.entity';  // Adjust the import based on your directory structure
+import { Physicalactivities } from './physicalactivities.enum';
 
 @Entity('Userdetails')
 export class Userdetail {
-
     @PrimaryGeneratedColumn()
     id: number;
     
@@ -16,10 +15,10 @@ export class Userdetail {
     user: User;
 
     @Column()
-    height: number;
+    height: number; // Assume height is in cm
 
     @Column()
-    mass: number;
+    mass: number; // Assume mass is in kg
 
     @Column({nullable:true})
     age: number;
@@ -30,35 +29,34 @@ export class Userdetail {
     @Column({nullable:true})
     healthstatus: string;
 
-    // Additional Fields
-    @Column({ nullable: true }) // Gender
+    @Column({ nullable: true })
     gender: string;
 
-    @Column({  nullable: true }) // Date of Birth
+    @Column({ nullable: true })
     yearofbirth: number;
 
-    @Column({ type:'enum' , enum:Physicalactivities,default:Physicalactivities.Moderately_active_lifestyle }) // Physical Activity Level
+    @Column({ type:'enum' , enum:Physicalactivities,default:Physicalactivities.Moderately_active_lifestyle })
     physicalActivityLevel: Physicalactivities;
 
-    @Column({ nullable: true }) // Dietary Preferences/Restrictions
+    @Column({ nullable: true })
     dietaryPreferences: string;
 
-    @Column({ nullable: true }) // Medical History
+    @Column({ nullable: true })
     medicalHistory: string;
 
-    @Column({ nullable: true }) // Fitness Goals
+    @Column({ nullable: true })
     fitnessGoals: string;
 
-    @Column({ nullable: true }) // Current Fitness Level
+    @Column({ nullable: true })
     currentFitnessLevel: string;
 
-    @Column({ nullable: true }) // Sleep Patterns
+    @Column({ nullable: true })
     sleepPatterns: string;
 
-    @Column({ nullable: true }) // Stress Level
+    @Column({ nullable: true })
     stressLevel: string;
 
-    @Column({ nullable: true }) // Body Measurements
+    @Column({ nullable: true })
     waistCircumference: number;
 
     @Column({ nullable: true })
@@ -67,37 +65,66 @@ export class Userdetail {
     @Column({ nullable: true })
     bodyFatPercentage: number;
 
-    @Column({ nullable: true }) // Blood Pressure
+    @Column({ nullable: true })
     bloodPressure: string;
 
-    @Column({ nullable: true }) // Cholesterol Levels
+    @Column({ nullable: true })
     cholesterolLevels: string;
 
-    @Column({ nullable: true }) // Blood Sugar Levels
+    @Column({ nullable: true })
     bloodSugarLevels: string;
 
-    @Column({ nullable: true }) // Fitness Assessment Results
+    @Column({ nullable: true })
     fitnessAssessmentResults: string;
 
-    @Column({ nullable: true }) // Activity Tracking Data
+    @Column({ nullable: true })
     activityTrackingData: string;
 
-    @Column({ nullable: true }) // Nutritional Intake
+    @Column({ nullable: true })
     nutritionalIntake: string;
 
-    @Column({ nullable: true }) // Hydration Level
+    @Column({ nullable: true })
     hydrationLevel: string;
 
-    @Column({ nullable: true }) // Mental Health Information
+    @Column({ nullable: true })
     mentalHealthInfo: string;
 
-    @Column({ nullable: true }) // Injury History
+    @Column({ nullable: true })
     injuryHistory: string;
 
-    @Column({ nullable: true }) // Social Support Network
+    @Column({ nullable: true })
     socialSupportNetwork: string;
 
-    
+    // Method to calculate BMI
+    calculateBMI(): number {
+        if (this.height && this.mass) {
+            // Convert height from cm to meters
+            const heightInMeters = this.height / 100;
+            return this.mass / (heightInMeters * heightInMeters);
+        }
+        return null;
+    }
 
+    // Method to determine health status
+    determineHealthStatus(): string {
+        if (this.BMI) {
+            if (this.BMI < 18.5) {
+                return 'Underweight';
+            } else if (this.BMI >= 18.5 && this.BMI < 24.9) {
+                return 'Healthy weight';
+            } else if (this.BMI >= 25 && this.BMI < 29.9) {
+                return 'Overweight';
+            } else {
+                return 'Obesity';
+            }
+        }
+        return 'Unknown';
+    }
+
+    @AfterInsert()
+    @AfterUpdate()
+    updateMetrics() {
+        this.BMI = this.calculateBMI();
+        this.healthstatus = this.determineHealthStatus();
+    }
 }
-

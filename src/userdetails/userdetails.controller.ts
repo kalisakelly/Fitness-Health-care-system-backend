@@ -44,10 +44,15 @@ export class UserdetailsController {
   }
 
 
-  // @Post('calculate-bmi') 
-  // calculateBMI(@Body() body: { height: number, mass: number }) {
-  //   const { height, mass } = body;
-  //   const bmi = this.userdetailsService.bodyBMI(height, mass);
-  //   return { bmi }; 
-  // }
+  @Get(':id/recommendations')
+  async getRecommendations(@Param('id') id: number) {
+      const userDetail: Userdetail = await this.userdetailsService.findOne(id);
+      const nutritionRecommendation = this.userdetailsService.getNutritionRecommendation(userDetail);
+      const exerciseRecommendation = this.userdetailsService.getExerciseRecommendation(userDetail);
+
+      return {
+          nutritionRecommendation,
+          exerciseRecommendation
+      };
+  }
 }
