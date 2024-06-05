@@ -1,7 +1,6 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Category } from "./categories.enum";
 import { User } from "src/users/entities/user.entity";
-import { UserConfig } from "vite";
 
 @Entity()
 export class Video {

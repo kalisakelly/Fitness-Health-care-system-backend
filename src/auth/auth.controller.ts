@@ -29,7 +29,7 @@ export class AuthController {
     return this.authService.verifyEmail(token);
   }
 
-  @Post('/login')
+  @Post('login')
   async login(@Body() loginDto: LoginDto,
         @Res({passthrough:true}) response: Response
   ) {

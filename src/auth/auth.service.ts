@@ -99,6 +99,22 @@ export class AuthService {
   
     return { token };
   }
+
+  async validateUser(email: string, pass: string): Promise<any> {
+    const user = await this.usersService.getByEmail(email);
+    if (user && user.password === pass) { // In a real-world app, use hashed passwords
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
+  }
+
+  async login(user: any) {
+    const payload = { username: user.username, sub: user.userId };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
   async resetPassword(passwordResetVerificationDto: PasswordResetVerificationDto): Promise<{ message: string }> {
     const { token, newPassword } = passwordResetVerificationDto;
 
@@ -141,5 +157,7 @@ async requestPasswordReset(passwordResetDto: PasswordResetDto): Promise<{ messag
 
   return { message: 'Please check your email for the password reset token.' };
 }
+
+
 
 }
