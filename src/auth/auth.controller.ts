@@ -30,20 +30,20 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() loginDto: LoginDto,
-        @Res({passthrough:true}) response: Response
-  ) {
+    async login(
+      @Body() loginDto: LoginDto,
+      @Res({ passthrough: true }) response: Response
+    ) {
+      const { token, role } = await this.authService.signin(loginDto);
 
-    const jwt =  await this.authService.signin(loginDto);
+      response.cookie('token', token, { httpOnly: true });
 
-    response.cookie('token', jwt ,{httpOnly:true})
-
-
-    return {
-      message:'success'
+      return {
+        message: 'success',
+        token,
+        role,
+      };
     }
-    
-  }
   @UseGuards(AuthenticationGuard)
   @Get('user')
   async user(@Req() request: Request) {

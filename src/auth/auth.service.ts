@@ -22,7 +22,7 @@ export class AuthService {
     private emailService: EmailService,
     private usersService: UsersService
   ) {}
-
+  
   
   async signup(signupDto: SignUpDto): Promise<{ message: string }> {
     const { username, email, password } = signupDto;
@@ -33,6 +33,8 @@ export class AuthService {
     if (existingUser) {
       throw new HttpException('User with this email already exists', HttpStatus.CONFLICT);
     }
+
+    
 
     // Generate email verification token
     const emailVerificationToken = otpGenerator.generate(4, {
@@ -75,11 +77,11 @@ export class AuthService {
     return 'Email successfully verified';
   }
   
-  async signin(logindto: LoginDto): Promise<{ token: string }> {
+  async signin(logindto: LoginDto): Promise<{ token: string, role: string }> {
     const { email, password } = logindto;
-    
+  
     const user = await this.usersrepository.findOneBy({ email });
-    
+  
     if (!user) {
       throw new UnauthorizedException('Invalid email address');
     }
@@ -93,13 +95,13 @@ export class AuthService {
       throw new UnauthorizedException('Invalid password');
     }
   
-    const token = this.jwtService.sign({ id: user.userid });
-    
+    const payload = { id: user.userid, role: user.role };
+    const token = this.jwtService.sign(payload);
+  
     console.log(token);
   
-    return { token };
+    return { token, role: user.role };
   }
-
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.getByEmail(email);
     if (user && user.password === pass) { // In a real-world app, use hashed passwords
@@ -110,9 +112,10 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+    const payload = { username: user.username, sub: user.userid, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
+      role: user.role, // Include role in the response
     };
   }
   async resetPassword(passwordResetVerificationDto: PasswordResetVerificationDto): Promise<{ message: string }> {
@@ -134,6 +137,7 @@ export class AuthService {
   async findOne(condition: any): Promise<User> {
     return this.usersrepository.findOne(condition);
 }
+
 async requestPasswordReset(passwordResetDto: PasswordResetDto): Promise<{ message: string }> {
   const { email } = passwordResetDto;
 
@@ -158,6 +162,9 @@ async requestPasswordReset(passwordResetDto: PasswordResetDto): Promise<{ messag
   return { message: 'Please check your email for the password reset token.' };
 }
 
+async decodeToken(token: string) {
+  return this.jwtService.decode(token);
+}
 
 
 }
