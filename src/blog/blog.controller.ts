@@ -5,10 +5,10 @@ import { UpdateBlogDto } from './dto/update-blog.dto';
 import { AuthenticationGuard } from 'src/guards/authentication.guard';
 
 @Controller('blog')
-@UseGuards(AuthenticationGuard) // Apply your authentication guard here if needed
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
+  @UseGuards(AuthenticationGuard)
   @Post()
   create(
     @Body() createBlogDto: CreateBlogDto,

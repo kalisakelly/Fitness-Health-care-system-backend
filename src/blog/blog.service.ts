@@ -18,8 +18,25 @@ export class BlogService {
     return this.blogrepository.save(newBlog);
   }
 
-  findAll() {
-    return this.blogrepository.find();
+  async findAll() {
+    const blogs = await this.blogrepository.find({ relations: ['createdby', 'postreply'] });
+
+    return blogs.map(blog => ({
+      author: {
+        name: blog.createdby.username,
+        avatar: blog.createdby.profile || '/path/to/default/avatar.jpg',
+        date: new Date(blog.createdat).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        }),
+      },
+      content: blog.body,
+      tags: [],  // Assuming you might want to implement tags in the future
+      stats: {
+        views: 0,  // Replace with actual views if you have this information
+        likes: 0,  // Replace with actual likes if you have this information
+      },
+    }));
   }
 
   async findOne(id: number): Promise<Blog> {
