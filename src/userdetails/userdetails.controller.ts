@@ -22,6 +22,7 @@ export class UserdetailsController {
   findAll() {
     return this.userdetailsService.findAll();
   }
+  
 
   @Get(':id')
   findOne(@Param('id') id: string) {

@@ -1,64 +1,39 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFile, UseInterceptors,Req, Res, Header } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+// videos.controller.ts
+import { Body, Controller, Delete, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { CreateVideoDto } from './dto/create-video.dto';
-import { UpdateVideoDto } from './dto/update-video.dto';
-import { Video } from './entities/video.entity';
 import { Request, Response } from 'express';
+import { AuthenticationGuard } from 'src/guards/authentication.guard';
+import { AuthorizationGuard } from 'src/guards/authorization.guard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
-
-
-const storage = diskStorage({
-  destination: './uploads',
-  filename: (req, file, cb) => {
-    const name = file.originalname.split('.')[0];
-    const extension = extname(file.originalname);
-    const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('');
-    cb(null, `${name}-${randomName}${extension}`);
-  },
-});
 @Controller('videos')
 export class VideosController {
   constructor(private readonly videosService: VideosService) {}
 
+  
+  @UseGuards(AuthenticationGuard, AuthorizationGuard) 
+  @Roles('admin')
   @Post('upload')
-  @UseInterceptors(FileInterceptor('url', { storage }))
-  async uploadFile(
-    @UploadedFile() url,
-    @Body('name') name: string,
-    @Body('description') description: string,
-  ) {
-    const createVideoDto = {
-      name,
-      description,
-      url: url.filename, // Assuming file.filename contains the filename
-    };
-    
-    const savedVideo = await this.videosService.create(createVideoDto);
-    return { message: 'Video uploaded successfully!', video: savedVideo };
+  create(@Body() createVideoDto: CreateVideoDto, @Req() req: any) {
+    const user = req.user.id; // Extract authenticated user ID
+    return this.videosService.create(createVideoDto, user);
   }
+
   @Get()
   findAll() {
     return this.videosService.findAll();
   }
-  @Get(':name/stream')
-  @Header('Accept-Ranges', 'bytes')
-	@Header('Content-Type', 'video/mp4')
-  async streamVideo(@Param('name') name: string, @Res() response: Response, @Req() request: Request) {
-    return this.videosService.streamVideo(name, response, request);
-  }
- 
+
+  // @Get(':name/stream')
+  // async streamVideo(@Param('name') name: string, @Res() response: Response, @Req() request: Request) {
+  //   return this.videosService.streamVideo(name, response, request);
+  // }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.videosService.findOne(+id);
   }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateVideoDto: UpdateVideoDto) {
-  //   return this.videosService.update(+id, updateVideoDto);
-  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

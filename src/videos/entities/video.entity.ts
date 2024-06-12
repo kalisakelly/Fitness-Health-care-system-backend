@@ -14,8 +14,8 @@ export class Video {
     @Column()
     url:string;
 
-    @Column({type:'enum',enum:Category,default:Category.Yoga})
-    category:Category;
+    @Column()
+    category: string;
 
     @Column()
     description:string;

@@ -10,4 +10,8 @@ export class CreateVideoDto {
 
     @IsNotEmpty()
     description:string;
+
+    @IsNotEmpty()
+    category: string;
+    
 }

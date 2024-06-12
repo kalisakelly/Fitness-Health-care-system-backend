@@ -1,3 +1,4 @@
+// videos.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,15 +16,17 @@ export class VideosService {
     private readonly videoRepository: Repository<Video>,
   ) {}
 
-  async create(createVideoDto: CreateVideoDto): Promise<Video> {
-    const newVideo = this.videoRepository.create(createVideoDto);
+  async create(createVideoDto: CreateVideoDto, user): Promise<Video> {
+    const newVideo = this.videoRepository.create({
+      ...createVideoDto,
+      UploadedBy: user,
+    });
     return this.videoRepository.save(newVideo);
   }
 
   async findAll(): Promise<{ name: string; url: string }[]> {
     const baseUrl = 'http://localhost:3001';
     const videos = await this.videoRepository.find();
-
     return videos.map((video) => ({
       name: video.name,
       url: `${baseUrl}/uploads/${video.name}`,
@@ -31,7 +34,7 @@ export class VideosService {
   }
 
   async findOne(id: number): Promise<Video> {
-    const video = await this.videoRepository.findOneBy({id});
+    const video = await this.videoRepository.findOneBy({ id });
     if (!video) {
       throw new NotFoundException(`Video with ID ${id} not found`);
     }
@@ -83,9 +86,9 @@ export class VideosService {
     const stream = createReadStream(path, { start, end });
     stream.pipe(response);
   }
+
   private isValidVideo(name: string): boolean {
     const allFiles: string[] = readdirSync(join(__dirname, '../../uploads/'));
     return allFiles.includes(name);
   }
- 
 }
