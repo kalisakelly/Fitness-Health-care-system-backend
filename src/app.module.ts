@@ -21,6 +21,7 @@ import { Loggingmiddleware } from './middlewares/Logging.middleware';
 import { SessionMiddleware } from './middlewares/session.middleware';
 import { CalculatorsService } from './calculators/calculators.service';
 import { CalculatorsModule } from './calculators/calculators.module';
+import { ReportsModule } from './reports/reports.module';
 
 
 @Module({
@@ -52,6 +53,7 @@ import { CalculatorsModule } from './calculators/calculators.module';
     PostrepliesModule,
     CloudinaryModule,
     CalculatorsModule,
+    ReportsModule,
   ],
   controllers: [AppController, EmailController],
   providers: [AppService,EmailService, CalculatorsService],

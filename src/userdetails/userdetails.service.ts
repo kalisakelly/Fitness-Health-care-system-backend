@@ -4,8 +4,10 @@ import { UpdateUserdetailDto } from './dto/update-userdetail.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Userdetail } from './entities/userdetail.entity';
-import { User } from 'src/users/entities/user.entity';
-import { UsersService } from 'src/users/users.service';
+import * as XLSX from 'xlsx';
+import * as PDFDocument from 'pdfkit';
+import { Response } from 'express';
+
 
 @Injectable()
 export class UserdetailsService {
@@ -32,9 +34,9 @@ export class UserdetailsService {
     return this.userdetailrepository.findOneBy({id});
   }
  
-  async findByUserId(userId: number): Promise<Userdetail[]> {
-    return this.userdetailrepository.find({ where: { id: userId } });
-  }
+  // async findByUserId(userId: number): Promise<Userdetail[]> {
+  //   return this.userdetailrepository.find({ where: { id: userId } });
+  // }
 
   async update(
     user, // Assuming you have the authenticated user's ID
@@ -93,4 +95,43 @@ getExerciseRecommendation(userDetail: Userdetail): string {
     }
 }
 
+async findByUserId(userId: number): Promise<Userdetail[]> {
+  return this.userdetailrepository.find({ where: { user: { userid: userId } } });
+}
+
+async exportToExcel(userDetails: Userdetail[], res: Response) {
+  const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(userDetails);
+  const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'UserDetails');
+  const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+  res.setHeader('Content-Disposition', 'attachment; filename="userdetails.xlsx"');
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.send(buf);
+}
+
+async exportToPDF(userDetails: Userdetail[], res: Response) {
+  const doc = new PDFDocument();
+  let buffers = [];
+  doc.on('data', buffers.push.bind(buffers));
+  doc.on('end', () => {
+    let pdfData = Buffer.concat(buffers);
+    res.setHeader('Content-Disposition', 'attachment; filename="userdetails.pdf"');
+    res.setHeader('Content-Type', 'application/pdf');
+    res.send(pdfData);
+  });
+
+  doc.fontSize(16).text('User Details Report', { align: 'center' });
+  doc.moveDown();
+  userDetails.forEach(userDetail => {
+    doc.fontSize(12).text(`Name: ${userDetail.name}`);
+    doc.text(`Height: ${userDetail.height}`);
+    doc.text(`Mass: ${userDetail.mass}`);
+    doc.text(`BMI: ${userDetail.BMI}`);
+    doc.text(`Health Status: ${userDetail.healthstatus}`);
+    // Add other fields as needed
+    doc.moveDown();
+  });
+
+  doc.end();
+}
 }

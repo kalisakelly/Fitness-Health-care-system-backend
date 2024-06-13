@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res } from '@nestjs/common';
 import { UserdetailsService } from './userdetails.service';
 import { CreateUserdetailDto } from './dto/create-userdetail.dto';
 import { UpdateUserdetailDto } from './dto/update-userdetail.dto';
 import { AuthenticationGuard } from 'src/guards/authentication.guard';
 import { Userdetail } from './entities/userdetail.entity';
+import { Response } from 'express';
+
 
 @UseGuards(AuthenticationGuard)
 @Controller('userdetails')
@@ -55,5 +57,25 @@ export class UserdetailsController {
           nutritionRecommendation,
           exerciseRecommendation
       };
+  }
+
+  @Get('download/excel')
+  
+      async downloadUserDetailsExcel(@Req() req: any, @Res() res: Response) {
+      const userId = req.user.id;
+      const userDetails = await this.userdetailsService.findByUserId(userId);
+      console.log(userDetails);  // Add this line
+      if (userDetails.length === 0) {
+        return res.status(404).send('No user details found');
+      }
+      await this.userdetailsService.exportToExcel(userDetails, res);
+}
+
+
+  @Get('download/pdf')
+  async downloadUserDetailsPDF(@Req() req: any, @Res() res: Response) {
+    const userId = req.user.id;
+    const userDetails = await this.userdetailsService.findByUserId(userId);
+    await this.userdetailsService.exportToPDF(userDetails, res);
   }
 }
