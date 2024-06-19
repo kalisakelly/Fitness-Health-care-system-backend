@@ -9,18 +9,16 @@ import { AuthenticationGuard } from 'src/guards/authentication.guard';
 export class PostrepliesController {
   constructor(private readonly postrepliesService: PostrepliesService) {}
 
-  @Post(':id') // Expecting blogId in the URL
+  @Post(':id')
   async create(@Param('id') id: string, @Body() createPostreplyDto: CreatePostreplyDto) {
     try {
-      const createdPostReply = await this.postrepliesService.create(+id, createPostreplyDto);
-      return createdPostReply;
+      return await this.postrepliesService.create(+id, createPostreplyDto);
     } catch (error) {
-      // Handle errors gracefully
       throw new NotFoundException(error.message);
     }
   }
 
-  @Get(':blogId') // Expecting blogId in the URL
+  @Get(':blogId')
   findAllByBlogId(@Param('blogId') blogId: string) {
     return this.postrepliesService.findAllByBlogId(+blogId);
   }
@@ -31,12 +29,12 @@ export class PostrepliesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostreplyDto: UpdatePostreplyDto, @Req() req) {
-    return this.postrepliesService.update(+id, updatePostreplyDto, req.user); // Pass authenticated user to service
+  update(@Param('id') id: string, @Body() updatePostreplyDto: UpdatePostreplyDto, @Req() req: any) {
+    return this.postrepliesService.update(+id, updatePostreplyDto, req.user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @Req() req) {
-    return this.postrepliesService.remove(+id, req.user); // Pass authenticated user to service
+  remove(@Param('id') id: string, @Req() req: any) {
+    return this.postrepliesService.remove(+id, req.user);
   }
 }

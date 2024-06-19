@@ -1,13 +1,19 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog } from './entities/blog.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
+import { Postreply } from 'src/postreplies/entities/postreply.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class BlogService {
-  constructor(@InjectRepository(Blog) private blogrepository:Repository<Blog>){}
+  constructor(
+    @InjectRepository(Blog) private blogrepository:Repository<Blog>,
+    @InjectRepository(Postreply)
+    private readonly postReplyRepository: Repository<Postreply>,
+    @InjectRepository(User) private userrepository:Repository<User>){}
 
 
   async create(createBlogDto: CreateBlogDto, user): Promise<Blog> {
@@ -18,26 +24,21 @@ export class BlogService {
     return this.blogrepository.save(newBlog);
   }
 
-  async findAll() {
-    const blogs = await this.blogrepository.find({ relations: ['createdby', 'postreply'] });
+  async findAll(page: number, search: string) {
+    const take = 6;
+    const skip = (page - 1) * take;
 
-    return blogs.map(blog => ({
-      author: {
-        name: blog.createdby.username,
-        avatar: blog.createdby.profile || '/path/to/default/avatar.jpg',
-        date: new Date(blog.createdat).toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-        }),
-      },
-      content: blog.body,
-      tags: [],  // Assuming you might want to implement tags in the future
-      stats: {
-        views: 0,  // Replace with actual views if you have this information
-        likes: 0,  // Replace with actual likes if you have this information
-      },
-    }));
+    const [blogs, totalBlogs] = await this.blogrepository.findAndCount({
+      where: search
+        ? { title: ILike(`%${search}%`) }
+        : {},
+      skip,
+      take,
+    });
+
+    return { blogs, totalBlogs };
   }
+
 
   async findOne(id: number): Promise<Blog> {
     const blog = await this.blogrepository.findOneBy({id});
@@ -59,5 +60,68 @@ export class BlogService {
       throw new ForbiddenException('You do not have permission to delete this blog');
     }
     await this.blogrepository.remove(blog);
+  }
+  async likeBlog(id: number, userId: number): Promise<Blog> {
+    console.log('Service Like Blog ID:', id);  // Log the ID
+
+    if (isNaN(id)) {
+      throw new BadRequestException('Invalid blog ID');
+    }
+
+    const blog = await this.blogrepository.findOneBy({id});
+    if (!blog) {
+      throw new NotFoundException(`Blog with ID ${id} not found`);
+    }
+
+    // Implement like logic here
+
+    await this.blogrepository.save(blog);
+    return blog;
+  }
+
+
+  async viewBlog(id: number): Promise<Blog> {
+    console.log('Service View Blog ID:', id);  // Log the ID
+
+    if (isNaN(id)) {
+      throw new BadRequestException('Invalid blog ID');
+    }
+
+    const blog = await this.blogrepository.findOneBy({id});
+    if (!blog) {
+      throw new NotFoundException(`Blog with ID ${id} not found`);
+    }
+
+    blog.views += 1;
+    await this.blogrepository.save(blog);
+    return blog;
+  }
+
+  async commentOnBlog(id: number, userId: number, body: string): Promise<Postreply> {
+    const blog = await this.blogrepository.findOneBy({id});
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+
+    // Create a new Postreply entity
+    const newPostreply = new Postreply();
+    newPostreply.body = body;
+    newPostreply.blog = blog;
+    newPostreply.createdBy = await this.findOrCreateUser(userId);
+
+    return this.postReplyRepository.save(newPostreply);
+  }
+
+  private async findOrCreateUser(userid: number): Promise<User> {
+    // Implement logic to find or create user
+    // Example:
+    let user = await this.userrepository.findOneBy({userid});
+    if (!user) {
+      // Create user logic here
+      user = new User();
+      user.userid = userid; // Ensure to set correct properties
+      // Save user or handle creation
+    }
+    return user;
   }
 }

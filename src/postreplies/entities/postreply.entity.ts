@@ -5,20 +5,15 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Postreply {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id:number
+  @Column()
+  body: string;
 
-    @Column()
-    body:string
+  @ManyToOne(() => Blog, blog => blog.postreply)
+  blog: Blog;
 
-    
-    @ManyToOne(() => User,(user)=> user.postreply)
-    Commentedby:User
-
-    @ManyToOne(() => Blog, (blog) => blog.postreply)
-    blog: Blog;
-
-    
-
+  @ManyToOne(() => User, user => user.postreply)
+  createdBy: User;
 }

@@ -73,6 +73,6 @@ export class User extends BaseEntity {
     @OneToMany(()=>Video,(video)=>video.UploadedBy)
     videosupload:Video[];
 
-    @OneToMany(()=>Postreply,(postreply)=>postreply.Commentedby)
+    @OneToMany(()=>Postreply,(postreply)=>postreply.createdBy)
     postreply:Postreply[];
 }

@@ -24,13 +24,20 @@ export class VideosService {
     return this.videoRepository.save(newVideo);
   }
 
-  async findAll(): Promise<{ name: string; url: string }[]> {
-    const baseUrl = 'http://localhost:3001';
-    const videos = await this.videoRepository.find();
-    return videos.map((video) => ({
-      name: video.name,
-      url: `${baseUrl}/uploads/${video.name}`,
-    }));
+  // async findAll(): Promise<{ name: string; url: string }[]> {
+  //   const baseUrl = 'http://localhost:3001';
+  //   const videos = await this.videoRepository.find();
+  //   return videos.map((video) => ({
+  //     name: video.name,
+  //     url: `${baseUrl}/uploads/${video.name}`,
+  //   }));
+  // }
+
+  async findAll():Promise<Video[]>{
+
+    const videos = await this.videoRepository.find()
+
+    return videos
   }
 
   async findOne(id: number): Promise<Video> {

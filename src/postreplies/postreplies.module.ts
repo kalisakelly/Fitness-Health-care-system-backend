@@ -6,12 +6,14 @@ import { PostrepliesService } from './postreplies.service';
 import { PostrepliesController } from './postreplies.controller';
 import { BlogService } from '../blog/blog.service'; // Assuming this is the correct path
 import { JwtService } from '@nestjs/jwt';
+import { UsersService } from 'src/users/users.service';
+import { User } from 'src/users/entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Postreply, Blog]),
+    TypeOrmModule.forFeature([Postreply, Blog,User]),
   ],
   controllers: [PostrepliesController],
-  providers: [PostrepliesService, BlogService,JwtService], // Remove JwtService if not needed
+  providers: [PostrepliesService, BlogService,JwtService,UsersService], // Remove JwtService if not needed
 })
 export class PostrepliesModule {}

@@ -54,7 +54,7 @@ export class PostrepliesService {
 
   async remove(id: number, user): Promise<void> {
     const reply = await this.findOne(id);
-    if (reply.Commentedby !== user) {
+    if (reply.createdBy !== user) {
       throw new ForbiddenException('You do not have permission to delete this post reply');
     }
     await this.postReplyRepository.remove(reply);

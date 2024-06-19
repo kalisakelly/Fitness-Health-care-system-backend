@@ -22,6 +22,7 @@ import { SessionMiddleware } from './middlewares/session.middleware';
 import { CalculatorsService } from './calculators/calculators.service';
 import { CalculatorsModule } from './calculators/calculators.module';
 import { ReportsModule } from './reports/reports.module';
+import { ScheduleModule } from './schedule/schedule.module';
 
 
 @Module({
@@ -54,6 +55,7 @@ import { ReportsModule } from './reports/reports.module';
     CloudinaryModule,
     CalculatorsModule,
     ReportsModule,
+    ScheduleModule,
   ],
   controllers: [AppController, EmailController],
   providers: [AppService,EmailService, CalculatorsService],
