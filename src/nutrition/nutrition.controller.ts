@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, UseGuards, Req, Query } from '@nestjs/common';
 import { NutritionService } from './nutrition.service';
 import { CreateNutritionDto } from './dto/create-nutrition.dto';
 import { UpdateNutritionDto } from './dto/update-nutrition.dto';
@@ -8,6 +8,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthenticationGuard } from 'src/guards/authentication.guard';
 import { AuthorizationGuard } from 'src/guards/authorization.guard';
 import { Roles } from 'src/auth/decorator/roles.decorator';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+
 
 
 
@@ -22,42 +24,51 @@ const storage = diskStorage({
 });
 
 @Controller('nutrition')
-@UseGuards(AuthenticationGuard,AuthorizationGuard)
-@Roles('admin','nutritionist')
+
 export class NutritionController {
-  constructor(private readonly nutritionService: NutritionService) {}
+  constructor(
+    private readonly nutritionService: NutritionService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('image', { storage }))
+  @UseInterceptors(FileInterceptor('image'))
+  @UseGuards(AuthenticationGuard, AuthorizationGuard)
+  @Roles('admin', 'nutritionist')
   async create(
-    @UploadedFile() image,
+    @UploadedFile() image: Express.Multer.File,
     @Body('name') name: string,
     @Body('description') description: string,
-    @Req() req: any, // Inject the request object
+    @Req() req: any,
   ) {
-    // Extract the authenticated user from the request object
     const user = req.user.id;
 
-    // Create the nutrition entity with the associated user
+    // Upload image to Cloudinary
+    const uploadResult = await this.cloudinaryService.uploadImage(image);
+
     const newNutrition = {
       name,
       description,
-      image: image.filename,
-      UploadedBy: user, // Associate the nutrition with the authenticated user
+      image: uploadResult.secure_url, // Save the Cloudinary URL
+      UploadedBy: user,
     };
 
-    // Call the nutrition service to create the nutrition
-    await this.nutritionService.create(newNutrition,user);
+    await this.nutritionService.create(newNutrition, user);
 
     return { message: 'New nutrition saved successfully!' };
   }
 
 
   @Get()
-  findAll() {
-    return this.nutritionService.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('search') search: string = '',
+    @Query('limit') limit: number = 6,
+    @Query('sort') sort: string = 'desc',
+  ) {
+    return await this.nutritionService.findAll(page, search, limit, sort);
   }
-
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.nutritionService.findOne(+id);

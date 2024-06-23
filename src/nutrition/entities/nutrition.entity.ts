@@ -1,10 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, BaseEntity } from "typeorm";
-import { NutrCategory } from "./nucategory.enum";
-import { User } from "src/users/entities/user.entity";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { NutrCategory } from './nucategory.enum';
+import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class Nutrition extends BaseEntity {
-
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -14,7 +13,7 @@ export class Nutrition extends BaseEntity {
     @Column()
     description: string;
 
-    @Column({ type: 'enum', enum: NutrCategory, default: NutrCategory.Cabohydrate })
+    @Column({ type: 'enum', enum: NutrCategory, default: NutrCategory.Cabohydrate})
     category: NutrCategory;
 
     @CreateDateColumn()
@@ -23,7 +22,7 @@ export class Nutrition extends BaseEntity {
     @UpdateDateColumn()
     updatedate: Date;
 
-    @Column({nullable:true})
+    @Column({ nullable: true })
     image: string;
 
     @ManyToOne(() => User, user => user.nutrient)

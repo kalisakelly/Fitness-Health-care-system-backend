@@ -78,4 +78,19 @@ export class UserdetailsController {
     const userDetails = await this.userdetailsService.findByUserId(userId);
     await this.userdetailsService.exportToPDF(userDetails, res);
   }
+
+  @Get('/pdf')
+async downloadUserDetailsPDF1(@Req() req: any, @Res() res: Response) {
+  try {
+    const userId = req.user.id;
+    const userDetails = await this.userdetailsService.findByUserId(userId);
+    if (userDetails.length === 0) {
+      return res.status(404).send('No user details found');
+    }
+    await this.userdetailsService.exportToPDF1(userDetails[0], res);
+  } catch (error) {
+    console.error('Error generating PDF:', error.message);
+    return res.status(500).send(`Internal Server Error: ${error.message}`);
+  }
+}
 }

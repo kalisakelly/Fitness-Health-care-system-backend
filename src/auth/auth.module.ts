@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
 import { EmailService } from 'src/email/email.service';
 import { UsersService } from 'src/users/users.service';
+import { TokenService } from './tokenblacklist';
 
 @Module({
   imports:[
@@ -31,7 +32,7 @@ import { UsersService } from 'src/users/users.service';
 
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy,EmailService,UsersService],
+  providers: [AuthService, JwtStrategy,EmailService,UsersService,TokenService],
   exports: [JwtStrategy, PassportModule],
 
 })

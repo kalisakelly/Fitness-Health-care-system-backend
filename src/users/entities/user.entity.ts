@@ -5,6 +5,7 @@ import { Video } from 'src/videos/entities/video.entity';
 import { Nutrition } from 'src/nutrition/entities/nutrition.entity';
 import { Blog } from 'src/blog/entities/blog.entity';
 import { Postreply } from 'src/postreplies/entities/postreply.entity';
+import { Schedule } from 'src/schedule/entities/schedule.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -75,4 +76,7 @@ export class User extends BaseEntity {
 
     @OneToMany(()=>Postreply,(postreply)=>postreply.createdBy)
     postreply:Postreply[];
+
+    @OneToMany(()=>Schedule,(schedule)=>schedule.createdBy)
+    myschedule:Schedule[];
 }

@@ -121,18 +121,40 @@ export class AuthService {
   async resetPassword(passwordResetVerificationDto: PasswordResetVerificationDto): Promise<{ message: string }> {
     const { token, newPassword } = passwordResetVerificationDto;
 
+    // Log input data
+    console.log('Received token:', token);
+    console.log('Received newPassword:', newPassword);
+
     const user = await this.usersService.findByPasswordResetToken(token);
-    if (!user || user.passwordResetExpires < new Date()) {
-      throw new HttpException('Invalid or expired token', HttpStatus.BAD_REQUEST);
+
+    if (!user) {
+        console.error('User not found for token:', token);
+        throw new HttpException('Invalid or expired token', HttpStatus.BAD_REQUEST);
+    }
+
+    // Log expiration date and current date
+    console.log('Token expiration date:', user.passwordResetExpires);
+    console.log('Current date:', new Date());
+
+    if (user.passwordResetExpires < new Date()) {
+        console.error('Token expired for user:', user.userid);
+        throw new HttpException('Invalid or expired token', HttpStatus.BAD_REQUEST);
     }
 
     user.password = await bcrypt.hash(newPassword, 6);
     user.passwordResetToken = null;
     user.passwordResetExpires = null;
+
+    // Log user update
+    console.log('Updating user password for user:', user.userid);
+
     await this.usersService.update(user.userid, user);
 
+    // Confirm update success
+    console.log('Password successfully reset for user:', user.userid);
+
     return { message: 'Password has been successfully reset.' };
-  }
+}
   
   async findOne(condition: any): Promise<User> {
     return this.usersrepository.findOne(condition);

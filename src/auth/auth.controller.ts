@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UnauthorizedException, Query, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UnauthorizedException, Query, HttpException, HttpStatus, UseGuards, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
@@ -8,6 +8,7 @@ import { VerifyEmailDto } from './dto/VerifyEmail.dto';
 import { PasswordResetVerificationDto } from './dto/passwordreset.dto';
 import { PasswordResetDto } from './dto/create-auth.dto';
 import { AuthenticationGuard } from 'src/guards/authentication.guard';
+import { TokenService } from './tokenblacklist';
 
 type NewType = SignUpDto;
 
@@ -15,7 +16,8 @@ type NewType = SignUpDto;
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private readonly tokenService: TokenService
 
     ) {}
 
@@ -73,14 +75,19 @@ export class AuthController {
       throw new UnauthorizedException('Unauthorized access');
     }
   }
-    @Post('logout')
-    async logout(@Res({passthrough: true}) response: Response) {
-        response.clearCookie('jwt');
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  async logout(@Res({ passthrough: true }) response: Response, @Req() request: Request) {
+      const token = request.cookies['jwt'];
+      if (token) {
+          this.tokenService.addToBlacklist(token);
+      }
+      response.clearCookie('jwt');
 
-        return {
-            message: 'success'
-        }
-    }
+      return {
+          message: 'success',
+      };
+  }
 
     @Post('reset')
     async resetPassword(@Body() passwordResetVerificationDto: PasswordResetVerificationDto): Promise<{ message: string }> {

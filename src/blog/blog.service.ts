@@ -3,7 +3,7 @@ import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog } from './entities/blog.entity';
-import { ILike, Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { Postreply } from 'src/postreplies/entities/postreply.entity';
 import { User } from 'src/users/entities/user.entity';
 
@@ -24,19 +24,22 @@ export class BlogService {
     return this.blogrepository.save(newBlog);
   }
 
-  async findAll(page: number, search: string) {
-    const take = 6;
-    const skip = (page - 1) * take;
+  async findAll(page: number, search: string, limit: number, sort: string) {
+    const skip = (page - 1) * limit;
+    const order = sort === 'asc' ? 'ASC' : 'DESC';
 
+    // Assuming your repository has a method to search and paginate blogs
     const [blogs, totalBlogs] = await this.blogrepository.findAndCount({
-      where: search
-        ? { title: ILike(`%${search}%`) }
-        : {},
+      where: { title: Like(`%${search}%`) }, // Adjust based on your search criteria
+      order: { createdat: order },
+      take: limit,
       skip,
-      take,
     });
 
-    return { blogs, totalBlogs };
+    return {
+      blogs,
+      totalBlogs,
+    };
   }
 
 

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, AfterInsert, AfterUpdate } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, AfterInsert, AfterUpdate, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { User } from '../../users/entities/user.entity';  // Adjust the import based on your directory structure
 import { Physicalactivities } from './physicalactivities.enum';
 
@@ -6,8 +6,8 @@ import { Physicalactivities } from './physicalactivities.enum';
 export class Userdetail {
     @PrimaryGeneratedColumn()
     id: number;
-    
-    @Column({nullable:true})
+
+    @Column({ nullable: true })
     name: string;
 
     @OneToOne(() => User, user => user.userDetails)
@@ -20,13 +20,13 @@ export class Userdetail {
     @Column()
     mass: number; // Assume mass is in kg
 
-    @Column({nullable:true})
+    @Column({ nullable: true })
     age: number;
 
-    @Column({nullable:true})
+    @Column({ nullable: true })
     BMI: number;
 
-    @Column({nullable:true})
+    @Column({ nullable: true })
     healthstatus: string;
 
     @Column({ nullable: true })
@@ -35,7 +35,10 @@ export class Userdetail {
     @Column({ nullable: true })
     yearofbirth: number;
 
-    @Column({ type:'enum' , enum:Physicalactivities,default:Physicalactivities.Moderately_active_lifestyle })
+    @Column({
+        type: 'enum', enum: Physicalactivities,
+        default: Physicalactivities.Moderately_active_lifestyle
+    })
     physicalActivityLevel: Physicalactivities;
 
     @Column({ nullable: true })
@@ -98,9 +101,9 @@ export class Userdetail {
     // Method to calculate BMI
     calculateBMI(): number {
         if (this.height && this.mass) {
-            // Convert height from cm to meters
             const heightInMeters = this.height / 100;
-            return this.mass / (heightInMeters * heightInMeters);
+            const bmi = this.mass / (heightInMeters * heightInMeters);
+            return isNaN(bmi) ? null : bmi;
         }
         return null;
     }
@@ -121,10 +124,21 @@ export class Userdetail {
         return 'Unknown';
     }
 
-    @AfterInsert()
-    @AfterUpdate()
+    @BeforeInsert()
+    @BeforeUpdate()
     updateMetrics() {
         this.BMI = this.calculateBMI();
         this.healthstatus = this.determineHealthStatus();
+
+        console.log('Updated Metrics:', {
+            BMI: this.BMI,
+            healthstatus: this.healthstatus,
+            height: this.height,
+            mass: this.mass
+        });
+
+        if (isNaN(this.BMI)) {
+            throw new Error('Invalid BMI value: NaN');
+        }
     }
 }

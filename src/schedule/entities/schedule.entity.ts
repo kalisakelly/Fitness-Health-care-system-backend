@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Schedule {
@@ -13,4 +14,10 @@ export class Schedule {
 
   @Column()
   minute: number;
+
+  @Column({nullable:false})
+  Details: string;
+
+  @ManyToOne(()=>User,(user)=>user.myschedule)
+  createdBy:User;
 }

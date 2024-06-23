@@ -9,45 +9,40 @@ import { Nutrition } from './entities/nutrition.entity';
 export class NutritionService {
   constructor(
     @InjectRepository(Nutrition)
-    private nutrirepo: Repository<Nutrition>,
+    private readonly nutritionRepository: Repository<Nutrition>,
   ) {}
 
-  async create(createNutritionDto: CreateNutritionDto, user): Promise<Nutrition> {
-    const newNutr = this.nutrirepo.create({
-      ...createNutritionDto,
-      UploadedBy: user, // Assuming user contains the user object or its identifier
-    });
-    return this.nutrirepo.save(newNutr);
+  async create(nutritionData: Partial<Nutrition>, userId: number): Promise<Nutrition> {
+    const nutrition = this.nutritionRepository.create(nutritionData);
+    return await this.nutritionRepository.save(nutrition);
   }
 
-  async findAll(): Promise<Nutrition[]> {
-    return this.nutrirepo.find();
+  async findAll(page: number, search: string, limit: number, sort: string): Promise<{ data: Nutrition[]; count: number }> {
+    const queryBuilder = this.nutritionRepository.createQueryBuilder('nutrition');
+
+    if (search) {
+      queryBuilder.where('nutrition.name LIKE :search OR nutrition.description LIKE :search', { search: `%${search}%` });
+    }
+
+    queryBuilder.orderBy('nutrition.creationdate', sort.toUpperCase() === 'DESC' ? 'DESC' : 'ASC')
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    const [data, count] = await queryBuilder.getManyAndCount();
+
+    return { data, count };
   }
 
   async findOne(id: number): Promise<Nutrition> {
-    return this.nutrirepo.findOneBy({id});
+    return await this.nutritionRepository.findOne({ where: { id } });
   }
 
-  async update(id: number, updateNutritionDto: UpdateNutritionDto): Promise<Nutrition> {
-    const nutrition = await this.nutrirepo.findOneBy({id});
-    if (!nutrition) {
-      throw new Error(`Nutrition with id ${id} not found`);
-    }
-    // Update nutrition properties based on updateNutritionDto
-    // Example: nutrition.name = updateNutritionDto.name;
-    // Update other properties as needed
-    return this.nutrirepo.save({
-      ...nutrition,
-      ...updateNutritionDto,
-    });
+  async update(id: number, updateNutritionDto: Partial<Nutrition>): Promise<Nutrition> {
+    await this.nutritionRepository.update(id, updateNutritionDto);
+    return this.findOne(id);
   }
 
   async remove(id: number): Promise<void> {
-    const nutrition = await this.nutrirepo.findOneBy({id});
-    if (!nutrition) {
-      throw new Error(`Nutrition with id ${id} not found`);
-    }
-    await this.nutrirepo.remove(nutrition);
+    await this.nutritionRepository.delete(id);
   }
 }
-

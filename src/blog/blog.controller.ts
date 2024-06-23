@@ -16,10 +16,15 @@ export class BlogController {
   }
 
   @Get()
-  findAll(@Query('page') page: number = 1, @Query('search') search: string = '') {
-    return this.blogService.findAll(page, search);
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('search') search: string = '',
+    @Query('limit') limit: number = 4,
+    @Query('sort') sort: string = 'desc',
+  ) {
+    return await this.blogService.findAll(page, search, limit, sort);
   }
-
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.blogService.findOne(+id);
