@@ -9,6 +9,8 @@ import { AuthenticationGuard } from 'src/guards/authentication.guard';
 import { AuthorizationGuard } from 'src/guards/authorization.guard';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { NotificationsService } from 'src/notifications/notifications.service';
+import { UsersService } from 'src/users/users.service';
 
 
 
@@ -29,6 +31,8 @@ export class NutritionController {
   constructor(
     private readonly nutritionService: NutritionService,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly usersService:UsersService,
+    private readonly notificationsService:NotificationsService
   ) {}
 
   @Post()
@@ -54,6 +58,12 @@ export class NutritionController {
     };
 
     await this.nutritionService.create(newNutrition, user);
+
+    // Notify all users about the new nutrition post
+    const users = await this.usersService.findAll();
+    for (const user of users) {
+      await this.notificationsService.createNotification('A new nutrition post has been added!', user);
+    }
 
     return { message: 'New nutrition saved successfully!' };
   }

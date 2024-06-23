@@ -6,6 +6,7 @@ import { Nutrition } from 'src/nutrition/entities/nutrition.entity';
 import { Blog } from 'src/blog/entities/blog.entity';
 import { Postreply } from 'src/postreplies/entities/postreply.entity';
 import { Schedule } from 'src/schedule/entities/schedule.entity';
+import { Notification } from 'src/notifications/entities/notification.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -79,4 +80,7 @@ export class User extends BaseEntity {
 
     @OneToMany(()=>Schedule,(schedule)=>schedule.createdBy)
     myschedule:Schedule[];
+
+    @OneToMany(()=>Notification,(notification)=>notification.user)
+    notifications:Notification[];
 }

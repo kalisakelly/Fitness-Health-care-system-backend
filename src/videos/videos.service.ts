@@ -1,7 +1,7 @@
 // videos.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Video } from './entities/video.entity';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
@@ -24,20 +24,28 @@ export class VideosService {
     return this.videoRepository.save(newVideo);
   }
 
-  // async findAll(): Promise<{ name: string; url: string }[]> {
-  //   const baseUrl = 'http://localhost:3001';
-  //   const videos = await this.videoRepository.find();
-  //   return videos.map((video) => ({
-  //     name: video.name,
-  //     url: `${baseUrl}/uploads/${video.name}`,
-  //   }));
-  // }
+  
 
-  async findAll():Promise<Video[]>{
+  async findAll(page: number, search: string, limit: number, sort: string) {
+    const skip = (page - 1) * limit;
+    const order = sort === 'asc' ? 'ASC' : 'DESC';
 
-    const videos = await this.videoRepository.find()
+    const [result, total] = await this.videoRepository.findAndCount({
+      where: [
+        { name: Like(`%${search}%`) },
+        { category: Like(`%${search}%`) },
+      ],
+      order: {
+        createdate: order,
+      },
+      skip,
+      take: limit,
+    });
 
-    return videos
+    return {
+      data: result,
+      count: total,
+    };
   }
 
   async findOne(id: number): Promise<Video> {
@@ -98,4 +106,16 @@ export class VideosService {
     const allFiles: string[] = readdirSync(join(__dirname, '../../uploads/'));
     return allFiles.includes(name);
   }
+
+  async countVideos(): Promise<number> {
+    try {
+      const count = await this.videoRepository.count();
+      console.log('Video count:', count); // Add logging for debugging
+      return count;
+    } catch (error) {
+      console.error('Error counting videos:', error); // Log the error
+      throw error;
+    }
+  }
+  
 }

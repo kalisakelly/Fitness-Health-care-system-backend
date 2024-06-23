@@ -8,6 +8,9 @@ import { AuthenticationGuard } from 'src/guards/authentication.guard';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+import { NotificationsService } from 'src/notifications/notifications.service';
+import { NotificationsModule } from 'src/notifications/notifications.module';
+import { Notification } from 'src/notifications/entities/notification.entity';
 
 
 
@@ -15,11 +18,13 @@ import { UsersService } from 'src/users/users.service';
   imports:[
     TypeOrmModule.forFeature([
       Nutrition,
-      User]),
+      User,
+      Notification]),
     CloudinaryModule,
+    
     
   ],
   controllers: [NutritionController],
-  providers: [NutritionService,JwtService,UsersService],
+  providers: [NutritionService,JwtService,UsersService,NotificationsService],
 })
 export class NutritionModule {}

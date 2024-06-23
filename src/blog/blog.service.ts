@@ -65,7 +65,6 @@ export class BlogService {
     await this.blogrepository.remove(blog);
   }
   async likeBlog(id: number, userId: number): Promise<Blog> {
-    console.log('Service Like Blog ID:', id);  // Log the ID
 
     if (isNaN(id)) {
       throw new BadRequestException('Invalid blog ID');
@@ -78,13 +77,13 @@ export class BlogService {
 
     // Implement like logic here
 
+    blog.likes += 1;
     await this.blogrepository.save(blog);
     return blog;
   }
 
 
   async viewBlog(id: number): Promise<Blog> {
-    console.log('Service View Blog ID:', id);  // Log the ID
 
     if (isNaN(id)) {
       throw new BadRequestException('Invalid blog ID');

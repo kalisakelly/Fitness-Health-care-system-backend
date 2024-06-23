@@ -1,9 +1,9 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Category } from "./categories.enum";
 import { User } from "src/users/entities/user.entity";
 
 @Entity()
-export class Video {
+export class Video extends BaseEntity{
 
     @PrimaryGeneratedColumn()
     id: number;

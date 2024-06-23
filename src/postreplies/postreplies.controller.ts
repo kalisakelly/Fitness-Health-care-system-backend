@@ -18,7 +18,7 @@ export class PostrepliesController {
     }
   }
 
-  @Get(':blogId')
+  @Get('/blog/:blogId')
   findAllByBlogId(@Param('blogId') blogId: string) {
     return this.postrepliesService.findAllByBlogId(+blogId);
   }

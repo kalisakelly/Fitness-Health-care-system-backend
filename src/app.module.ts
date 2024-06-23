@@ -23,6 +23,7 @@ import { CalculatorsService } from './calculators/calculators.service';
 import { CalculatorsModule } from './calculators/calculators.module';
 import { ReportsModule } from './reports/reports.module';
 import { ScheduleModule } from './schedule/schedule.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 
 @Module({
@@ -56,6 +57,7 @@ import { ScheduleModule } from './schedule/schedule.module';
     CalculatorsModule,
     ReportsModule,
     ScheduleModule,
+    NotificationsModule,
   ],
   controllers: [AppController, EmailController],
   providers: [AppService,EmailService, CalculatorsService],
