@@ -47,22 +47,29 @@ export class ScheduleService {
     return user;
   }
 
-  async myschedule(userId: number): Promise<Schedule[]> {
-    try {
-      const user = await this.findByUserId(userId);
+  // async myschedule(userId: number): Promise<Schedule[]> {
+  //   try {
+  //     const user = await this.findByUserId(userId);
 
-      const schedules = await this.schedulesRepository.createQueryBuilder('schedule')
-        .leftJoinAndSelect('schedule.createdBy', 'user')
-        .where('user.id = :userId', { userId })
-        .getMany();
+  //     const schedules = await this.schedulesRepository.createQueryBuilder('schedule')
+  //       .leftJoinAndSelect('schedule.createdBy', 'user')
+  //       .where('user.id = :userId', { userId })
+  //       .getMany();
 
-      if (!schedules || schedules.length === 0) {
-        throw new NotFoundException('Schedules not found');
-      }
+  //     if (!schedules || schedules.length === 0) {
+  //       throw new NotFoundException('Schedules not found');
+  //     }
 
-      return schedules;
-    } catch (error) {
-      throw new Error(`Error fetching schedules: ${error.message}`);
-    }
+  //     return schedules;
+  //   } catch (error) {
+  //     throw new Error(`Error fetching schedules: ${error.message}`);
+  //   }
+  // }
+
+  async getSchedulesByUserId(userId: number): Promise<Schedule[]> {
+    return this.schedulesRepository.query(
+      `SELECT * FROM schedule WHERE "createdByUserid" = $1`,
+      [userId],
+    );
   }
 }

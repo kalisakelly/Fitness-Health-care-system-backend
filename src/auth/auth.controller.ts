@@ -18,7 +18,6 @@ export class AuthController {
     private readonly authService: AuthService,
     private jwtService: JwtService,
     private readonly tokenService: TokenService
-
     ) {}
 
   @Post('signup')

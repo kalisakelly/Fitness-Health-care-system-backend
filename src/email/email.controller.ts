@@ -4,6 +4,7 @@ import { SendEmailDto } from './mail.interface';
 import * as nodemailer from "nodemailer";    
 
 
+
 @Controller('email')
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}

@@ -57,7 +57,6 @@ export class BlogController {
 
   @Patch(':id/view')
   async viewBlog(@Param('id', ParseIntPipe) id: number) {
-    console.log('View Blog ID:', id);  // Log the ID
     return this.blogService.viewBlog(id);
   }
 
@@ -65,7 +64,6 @@ export class BlogController {
   @UseGuards(AuthenticationGuard)
   async likeBlog(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     const userId = req.user.id;
-    console.log('Like Blog ID:', id);  // Log the ID
     return this.blogService.likeBlog(id, userId);
   }
 
@@ -73,7 +71,6 @@ export class BlogController {
   @UseGuards(AuthenticationGuard)
   async commentOnBlog(@Param('id', ParseIntPipe) id: number, @Req() req: any, @Body('text') text: string) {
     const userId = req.user.id;
-    console.log('Comment Blog ID:', id);  // Log the ID
     return this.blogService.commentOnBlog(id, userId, text);
   }
 
