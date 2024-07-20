@@ -23,7 +23,7 @@ export class Userdetail {
     @Column({ nullable: true })
     age: number;
 
-    @Column({ nullable: true })
+    @Column({ type: 'float', nullable: true })
     BMI: number;
 
     @Column({ nullable: true })

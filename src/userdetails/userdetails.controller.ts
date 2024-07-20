@@ -19,6 +19,7 @@ export class UserdetailsController {
       const user = req.user.id;
       return this.userdetailsService.create(createUserdetailDto,user);
   }
+  
 
   @Get()
   findAll() {
