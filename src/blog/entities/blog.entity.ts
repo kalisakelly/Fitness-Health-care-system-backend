@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, BaseEntity } from "typeorm";
 import { Status } from "./status.enum";
 import { User } from "src/users/entities/user.entity";
 import { Postreply } from "src/postreplies/entities/postreply.entity";
 
 @Entity()
-export class Blog {
+export class Blog extends BaseEntity{
   @PrimaryGeneratedColumn()
   id: number;
 

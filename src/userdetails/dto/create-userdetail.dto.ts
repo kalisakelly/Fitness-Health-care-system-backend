@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsOptional, Min, IsIn, IsString } from 'class-validator';
 
 export class CreateUserdetailDto {
@@ -17,6 +18,7 @@ export class CreateUserdetailDto {
   @IsOptional()
   mass: number;
 
+  @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   @Min(0, { message: 'BMI cannot be negative' })
   @IsOptional()

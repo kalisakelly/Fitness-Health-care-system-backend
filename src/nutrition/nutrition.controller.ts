@@ -93,4 +93,10 @@ export class NutritionController {
   remove(@Param('id') id: string) {
     return this.nutritionService.remove(+id);
   }
+
+  @Get('count')
+  async getNutritionCount() {
+    const count = await this.nutritionService.countNutrition();
+    return { count };
+  }
 }

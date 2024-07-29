@@ -1,7 +1,7 @@
 // videos.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { getConnection, Like, Repository } from 'typeorm';
 import { Video } from './entities/video.entity';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
@@ -109,11 +109,18 @@ export class VideosService {
 
   async countVideos(): Promise<number> {
     try {
-      const count = await this.videoRepository.count();
-      console.log('Video count:', count); // Add logging for debugging
+      const result = await getConnection().query('SELECT COUNT(*) AS count FROM video');
+      console.log('Raw Count Result:', result);  // Debugging
+    
+
+      const count = parseInt(result[0].count, 10);
+      if (isNaN(count)) {
+        throw new Error('Count is NaN');
+      }
+
       return count;
     } catch (error) {
-      console.error('Error counting videos:', error); // Log the error
+      console.error('Error counting videos:', error.message);
       throw error;
     }
   }

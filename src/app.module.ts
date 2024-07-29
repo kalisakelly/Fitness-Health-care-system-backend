@@ -39,7 +39,8 @@ import { NotificationsModule } from './notifications/notifications.module';
         password:configservice.get<string>('POSTGRES_PASSWORD'),
         database:configservice.get<string>('POSTGRES_DB'),
         autoLoadEntities:true,
-        synchronize:true,
+        synchronize: true,
+        // logging: ["query", "error"]
       }),
     }),
     CacheModule.register({

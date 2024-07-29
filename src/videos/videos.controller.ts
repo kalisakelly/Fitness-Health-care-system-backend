@@ -60,9 +60,15 @@ export class VideosController {
   }
 
   @Get('count')
-  async countAll():Promise<{ count: number }>{
-    const count = await this.videosService.countVideos();
-    return { count };
+  async getVideoCount() {
+    try {
+      const count = await this.videosService.countVideos();
+      console.log('Video Count:', count);  // Debugging
+      return { count };
+    } catch (error) {
+      console.error('Error fetching video count:', error.message);
+      throw error;
+    }
   }
 
 }

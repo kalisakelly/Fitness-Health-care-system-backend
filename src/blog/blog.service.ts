@@ -1,20 +1,25 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateBlogDto } from './dto/create-blog.dto';
-import { UpdateBlogDto } from './dto/update-blog.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Blog } from './entities/blog.entity';
-import { ILike, Like, Repository } from 'typeorm';
-import { Postreply } from 'src/postreplies/entities/postreply.entity';
-import { User } from 'src/users/entities/user.entity';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Postreply } from "src/postreplies/entities/postreply.entity";
+import { User } from "src/users/entities/user.entity";
+import { Like, Repository } from "typeorm";
+import { CreateBlogDto } from "./dto/create-blog.dto";
+import { UpdateBlogDto } from "./dto/update-blog.dto";
+import { Blog } from "./entities/blog.entity";
 
 @Injectable()
 export class BlogService {
   constructor(
-    @InjectRepository(Blog) private blogrepository:Repository<Blog>,
+    @InjectRepository(Blog) private blogrepository: Repository<Blog>,
     @InjectRepository(Postreply)
     private readonly postReplyRepository: Repository<Postreply>,
-    @InjectRepository(User) private userrepository:Repository<User>){}
-
+    @InjectRepository(User) private userrepository: Repository<User>,
+  ) {}
 
   async create(createBlogDto: CreateBlogDto, user): Promise<Blog> {
     const newBlog = this.blogrepository.create({
@@ -26,7 +31,7 @@ export class BlogService {
 
   async findAll(page: number, search: string, limit: number, sort: string) {
     const skip = (page - 1) * limit;
-    const order = sort === 'asc' ? 'ASC' : 'DESC';
+    const order = sort === "asc" ? "ASC" : "DESC";
 
     // Assuming your repository has a method to search and paginate blogs
     const [blogs, totalBlogs] = await this.blogrepository.findAndCount({
@@ -42,9 +47,8 @@ export class BlogService {
     };
   }
 
-
   async findOne(id: number): Promise<Blog> {
-    const blog = await this.blogrepository.findOneBy({id});
+    const blog = await this.blogrepository.findOneBy({ id });
     if (!blog) {
       throw new NotFoundException(`Blog with id ${id} not found`);
     }
@@ -60,17 +64,18 @@ export class BlogService {
   async remove(id: number, user): Promise<void> {
     const blog = await this.findOne(id);
     if (blog.createdby !== user) {
-      throw new ForbiddenException('You do not have permission to delete this blog');
+      throw new ForbiddenException(
+        "You do not have permission to delete this blog",
+      );
     }
     await this.blogrepository.remove(blog);
   }
   async likeBlog(id: number, userId: number): Promise<Blog> {
-
     if (isNaN(id)) {
-      throw new BadRequestException('Invalid blog ID');
+      throw new BadRequestException("Invalid blog ID");
     }
 
-    const blog = await this.blogrepository.findOneBy({id});
+    const blog = await this.blogrepository.findOneBy({ id });
     if (!blog) {
       throw new NotFoundException(`Blog with ID ${id} not found`);
     }
@@ -82,14 +87,12 @@ export class BlogService {
     return blog;
   }
 
-
   async viewBlog(id: number): Promise<Blog> {
-
     if (isNaN(id)) {
-      throw new BadRequestException('Invalid blog ID');
+      throw new BadRequestException("Invalid blog ID");
     }
 
-    const blog = await this.blogrepository.findOneBy({id});
+    const blog = await this.blogrepository.findOneBy({ id });
     if (!blog) {
       throw new NotFoundException(`Blog with ID ${id} not found`);
     }
@@ -99,10 +102,14 @@ export class BlogService {
     return blog;
   }
 
-  async commentOnBlog(id: number, userId: number, body: string): Promise<Postreply> {
-    const blog = await this.blogrepository.findOneBy({id});
+  async commentOnBlog(
+    id: number,
+    userId: number,
+    body: string,
+  ): Promise<Postreply> {
+    const blog = await this.blogrepository.findOneBy({ id });
     if (!blog) {
-      throw new NotFoundException('Blog not found');
+      throw new NotFoundException("Blog not found");
     }
 
     // Create a new Postreply entity
@@ -117,7 +124,7 @@ export class BlogService {
   private async findOrCreateUser(userid: number): Promise<User> {
     // Implement logic to find or create user
     // Example:
-    let user = await this.userrepository.findOneBy({userid});
+    let user = await this.userrepository.findOneBy({ userid });
     if (!user) {
       // Create user logic here
       user = new User();
@@ -125,5 +132,13 @@ export class BlogService {
       // Save user or handle creation
     }
     return user;
+  }
+
+  async countBlogs() {
+    const result = await Blog.count();
+    console.log("log" + result);
+    // Extract the count from the result
+
+    return { blog: result };
   }
 }
