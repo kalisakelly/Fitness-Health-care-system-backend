@@ -24,7 +24,6 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Authorization', // Include Authorization header
   });
   
-
   await app.listen(port);
 }
 bootstrap();

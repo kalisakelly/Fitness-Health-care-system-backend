@@ -32,9 +32,9 @@ export class UserdetailsService {
   }
 
   async findOne(id: number): Promise<Userdetail> {
-    return this.userdetailrepository.findOneBy({ id });
+    // This should be replaced with actual database fetch logic
+    return this.userdetailrepository.findOne({ where: { id } });
   }
-
   // async findByUserId(userId: number): Promise<Userdetail[]> {
   //   return this.userdetailrepository.find({ where: { id: userId } });
   // }
@@ -103,11 +103,10 @@ export class UserdetailsService {
     });
   }
   async findByUser(userId: number) {
-    
     return this.userdetailrepository.findOne({
-      where: { user: { userid: userId } },
+        where: { user: { userid: userId } },
     });
-  }
+}
 
   async exportToExcel(userDetails: Userdetail[], res: Response) {
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(userDetails);
@@ -368,4 +367,27 @@ export class UserdetailsService {
       throw new Error("Error exporting to PDF");
     }
   }
+
+  async getBMIStats() {
+    try {
+      const query = `
+        SELECT 
+          SUM(CASE WHEN "BMI" >= 18.5 AND "BMI" < 24.9 THEN 1 ELSE 0 END) AS healthy,
+          SUM(CASE WHEN "BMI" >= 24.9 THEN 1 ELSE 0 END) AS obese,
+          SUM(CASE WHEN "BMI" < 18.5 THEN 1 ELSE 0 END) AS underweight
+        from "Userdetails" u ;
+      `;
+      const result = await this.userdetailrepository.query(query);
+
+      return {
+        healthy: parseInt(result[0].healthy, 10) || 0,
+        obese: parseInt(result[0].obese, 10) || 0,
+        underweight: parseInt(result[0].underweight, 10) || 0,
+      };
+    } catch (error) {
+      console.error('Error fetching BMI stats:', error);
+      throw error;
+    }
+  }
 }
+

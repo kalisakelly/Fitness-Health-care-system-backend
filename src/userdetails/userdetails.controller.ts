@@ -57,15 +57,17 @@ export class UserdetailsController {
     return this.userdetailsService.remove(+id);
   }
 
+  @UseGuards(AuthenticationGuard)
   @Get("/user/test")
-  async getUserdetailsByUserId(@Req() req) {
-    const user: User = req.user;
-    return this.userdetailsService.findByUser(user.userid);
+  async getUserdetailsByUserId(@Req() req: any) {
+      const userId: number = req.user.id; // Correctly extract user ID from the request
+      return this.userdetailsService.findByUser(userId); // Pass user ID to the service method
   }
 
   @Get(':id/recommendations')
-  async getRecommendations(@Param('id', ParseIntPipe) id: number) {
-    const userDetail: Userdetail = await this.userdetailsService.findOne(id);
+  async getRecommendations(@Req() req: any) {
+    const userId: number = req.user.id;
+    const userDetail: Userdetail = await this.userdetailsService.findByUser(userId);
     
     if (!userDetail) {
       throw new NotFoundException('User not found');
@@ -112,4 +114,17 @@ export class UserdetailsController {
       return res.status(500).send(`Internal Server Error: ${error.message}`);
     }
   }
+
+  @Get('/user/:userId')
+    async getUserDetails(@Param('userId') userId: number) {
+    return this.userdetailsService.findByUserId(userId);
+  }
+
+  @Get('bmi/stats')
+  async getBMIStats(@Req() req: any) {
+    const result = await this.userdetailsService.getBMIStats();
+    return result;
+  }
+
+
 }
