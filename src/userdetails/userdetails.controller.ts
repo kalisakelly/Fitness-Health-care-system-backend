@@ -3,7 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Req,
@@ -24,11 +26,13 @@ import { kill } from "process";
 export class UserdetailsController {
   constructor(private readonly userdetailsService: UserdetailsService) {}
 
-  @Post()
+  @Post("/create")
   create(@Body() createUserdetailDto: CreateUserdetailDto, @Req() req: any) {
     const user = req.user.id;
+    console.log("Successfully saved");  // Log the received data
     return this.userdetailsService.create(createUserdetailDto, user);
-  }
+}
+
 
   @Get()
   findAll() {
@@ -56,17 +60,19 @@ export class UserdetailsController {
   @Get("/user/test")
   async getUserdetailsByUserId(@Req() req) {
     const user: User = req.user;
-    console.log(user);
     return this.userdetailsService.findByUser(user.userid);
   }
 
-  @Get(":id/recommendations")
-  async getRecommendations(@Param("id") id: number) {
+  @Get(':id/recommendations')
+  async getRecommendations(@Param('id', ParseIntPipe) id: number) {
     const userDetail: Userdetail = await this.userdetailsService.findOne(id);
-    const nutritionRecommendation =
-      this.userdetailsService.getNutritionRecommendation(userDetail);
-    const exerciseRecommendation =
-      this.userdetailsService.getExerciseRecommendation(userDetail);
+    
+    if (!userDetail) {
+      throw new NotFoundException('User not found');
+    }
+
+    const nutritionRecommendation = this.userdetailsService.getNutritionRecommendation(userDetail);
+    const exerciseRecommendation = this.userdetailsService.getExerciseRecommendation(userDetail);
 
     return {
       nutritionRecommendation,

@@ -98,8 +98,9 @@ export class BlogController {
     return this.blogService.commentOnBlog(id, userId, text);
   }
 
-  @Get("count/test")
+  @Get("count/blog")
   async getBlogCount() {
-    return await this.blogService.countBlogs();
+    const count = await this.blogService.countBlogs();
+    return { count };
   }
 }

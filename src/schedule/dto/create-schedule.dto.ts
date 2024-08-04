@@ -19,5 +19,5 @@ export class CreateScheduleDto {
 
   @IsString()
   @IsOptional()
-  Details: string;
+  details: string;
 }

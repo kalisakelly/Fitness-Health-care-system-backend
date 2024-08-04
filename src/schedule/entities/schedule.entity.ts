@@ -15,8 +15,8 @@ export class Schedule {
   @Column()
   minute: number;
 
-  @Column({nullable:false})
-  Details: string;
+  @Column()
+  details: string;
 
   @ManyToOne(()=>User,(user)=>user.myschedule)
   createdBy:User;

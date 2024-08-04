@@ -59,16 +59,13 @@ export class VideosController {
     return this.videosService.remove(+id);
   }
 
-  @Get('count')
+  @Get('count/videos')
   async getVideoCount() {
-    try {
-      const count = await this.videosService.countVideos();
-      console.log('Video Count:', count);  // Debugging
-      return { count };
-    } catch (error) {
-      console.error('Error fetching video count:', error.message);
-      throw error;
-    }
+
+    const count = await this.videosService.getCountVideos();
+
+    return { count }
+  
   }
 
 }

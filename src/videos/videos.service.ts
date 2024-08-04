@@ -107,22 +107,10 @@ export class VideosService {
     return allFiles.includes(name);
   }
 
-  async countVideos(): Promise<number> {
-    try {
-      const result = await getConnection().query('SELECT COUNT(*) AS count FROM video');
-      console.log('Raw Count Result:', result);  // Debugging
+  async getCountVideos() {
     
+    const result = await Video.count();
 
-      const count = parseInt(result[0].count, 10);
-      if (isNaN(count)) {
-        throw new Error('Count is NaN');
-      }
-
-      return count;
-    } catch (error) {
-      console.error('Error counting videos:', error.message);
-      throw error;
-    }
+    return result
   }
-  
 }

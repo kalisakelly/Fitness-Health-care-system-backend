@@ -136,9 +136,6 @@ export class BlogService {
 
   async countBlogs() {
     const result = await Blog.count();
-    console.log("log" + result);
-    // Extract the count from the result
-
-    return { blog: result };
+    return result;
   }
 }

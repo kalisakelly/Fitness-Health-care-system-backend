@@ -103,7 +103,7 @@ export class UserdetailsService {
     });
   }
   async findByUser(userId: number) {
-    log("hello");
+    
     return this.userdetailrepository.findOne({
       where: { user: { userid: userId } },
     });

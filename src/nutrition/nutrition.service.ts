@@ -46,7 +46,10 @@ export class NutritionService {
     await this.nutritionRepository.delete(id);
   }
 
-  async countNutrition(): Promise<number> {
-    return this.nutritionRepository.count();
+  async countNutrition() {
+    
+    const result = await this.nutritionRepository.count()
+
+    return result
   }
 }
