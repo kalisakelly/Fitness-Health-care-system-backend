@@ -34,9 +34,14 @@ export class PostrepliesService {
     if (!blog) {
       throw new NotFoundException(`Blog with ID ${id} not found`);
     }
-
-    return this.postReplyRepository.find({ where: { blog } });
+  
+    const postreplies = await Postreply.createQueryBuilder('postreply')
+      .innerJoinAndSelect('postreply.blog', 'blog')
+      .where('postreply.blogId = :id', { id: blog.id })
+      .getMany();  
+    return postreplies;
   }
+
 
   async findOne(id: number): Promise<Postreply> {
     const reply = await this.postReplyRepository.findOneBy({id});

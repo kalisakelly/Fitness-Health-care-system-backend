@@ -375,19 +375,21 @@ export class UserdetailsService {
           SUM(CASE WHEN "BMI" >= 18.5 AND "BMI" < 24.9 THEN 1 ELSE 0 END) AS healthy,
           SUM(CASE WHEN "BMI" >= 24.9 THEN 1 ELSE 0 END) AS obese,
           SUM(CASE WHEN "BMI" < 18.5 THEN 1 ELSE 0 END) AS underweight
-        from "Userdetails" u ;
+        FROM "Userdetails" u;
       `;
+      
       const result = await this.userdetailrepository.query(query);
-
+  
       return {
         healthy: parseInt(result[0].healthy, 10) || 0,
         obese: parseInt(result[0].obese, 10) || 0,
         underweight: parseInt(result[0].underweight, 10) || 0,
       };
     } catch (error) {
-      console.error('Error fetching BMI stats:', error);
-      throw error;
+      console.error('Error fetching BMI stats:', error.message);
+      throw new Error('Could not fetch BMI statistics');
     }
   }
+  
 }
 

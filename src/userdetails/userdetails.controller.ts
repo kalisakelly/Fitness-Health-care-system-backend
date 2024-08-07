@@ -19,14 +19,13 @@ import { CreateUserdetailDto } from "./dto/create-userdetail.dto";
 import { UpdateUserdetailDto } from "./dto/update-userdetail.dto";
 import { Userdetail } from "./entities/userdetail.entity";
 import { UserdetailsService } from "./userdetails.service";
-import { kill } from "process";
 
-@UseGuards(AuthenticationGuard)
 @Controller("userdetails")
 export class UserdetailsController {
   constructor(private readonly userdetailsService: UserdetailsService) {}
 
   @Post("/create")
+  @UseGuards(AuthenticationGuard)
   create(@Body() createUserdetailDto: CreateUserdetailDto, @Req() req: any) {
     const user = req.user.id;
     console.log("Successfully saved");  // Log the received data
@@ -35,16 +34,19 @@ export class UserdetailsController {
 
 
   @Get()
+  @UseGuards(AuthenticationGuard)
   findAll() {
     return this.userdetailsService.findAll();
   }
 
   @Get(":id")
+  @UseGuards(AuthenticationGuard)
   findOne(@Param("id") id: string) {
     return this.userdetailsService.findOne(+id);
   }
 
   @Patch(":id")
+  @UseGuards(AuthenticationGuard)
   update(
     @Param("id") id: string,
     @Body() updateUserdetailDto: UpdateUserdetailDto,
@@ -53,6 +55,7 @@ export class UserdetailsController {
   }
 
   @Delete(":id")
+  @UseGuards(AuthenticationGuard)
   remove(@Param("id") id: string) {
     return this.userdetailsService.remove(+id);
   }
@@ -65,6 +68,7 @@ export class UserdetailsController {
   }
 
   @Get(':id/recommendations')
+  @UseGuards(AuthenticationGuard)
   async getRecommendations(@Req() req: any) {
     const userId: number = req.user.id;
     const userDetail: Userdetail = await this.userdetailsService.findByUser(userId);
@@ -83,6 +87,7 @@ export class UserdetailsController {
   }
 
   @Get("download/excel")
+  @UseGuards(AuthenticationGuard)
   async downloadUserDetailsExcel(@Req() req: any, @Res() res: Response) {
     const userId = req.user.id;
     const userDetails = await this.userdetailsService.findByUserId(userId);
@@ -94,6 +99,7 @@ export class UserdetailsController {
   }
 
   @Get("download/pdf")
+  @UseGuards(AuthenticationGuard)
   async downloadUserDetailsPDF(@Req() req: any, @Res() res: Response) {
     const userId = req.user.id;
     const userDetails = await this.userdetailsService.findByUserId(userId);
@@ -101,6 +107,7 @@ export class UserdetailsController {
   }
 
   @Get("/pdf")
+  @UseGuards(AuthenticationGuard)
   async downloadUserDetailsPDF1(@Req() req: any, @Res() res: Response) {
     try {
       const userId = req.user.id;
@@ -116,14 +123,20 @@ export class UserdetailsController {
   }
 
   @Get('/user/:userId')
+  @UseGuards(AuthenticationGuard)
     async getUserDetails(@Param('userId') userId: number) {
     return this.userdetailsService.findByUserId(userId);
   }
 
   @Get('bmi/stats')
-  async getBMIStats(@Req() req: any) {
-    const result = await this.userdetailsService.getBMIStats();
-    return result;
+  async getBMIStats() {
+    try {
+      const result = await this.userdetailsService.getBMIStats();
+      return result;
+    } catch (error) {
+      console.error('Error fetching BMI stats:', error.message);
+      throw new Error('Could not fetch BMI statistics');
+    }
   }
 
 

@@ -5,7 +5,6 @@ import { UpdatePostreplyDto } from './dto/update-postreply.dto';
 import { AuthenticationGuard } from 'src/guards/authentication.guard';
 
 @Controller('postreplies')
-@UseGuards(AuthenticationGuard)
 export class PostrepliesController {
   constructor(private readonly postrepliesService: PostrepliesService) {}
 
