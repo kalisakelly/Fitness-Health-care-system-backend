@@ -13,8 +13,8 @@ export class Nutrition extends BaseEntity {
     @Column()
     description: string;
 
-    @Column({ type: 'enum', enum: NutrCategory, default: NutrCategory.Cabohydrate})
-    category: NutrCategory;
+    @Column({ nullable: true })
+    category: string;
 
     @CreateDateColumn()
     creationdate: Date;

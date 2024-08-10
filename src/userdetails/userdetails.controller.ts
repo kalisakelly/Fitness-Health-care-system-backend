@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -19,6 +20,8 @@ import { CreateUserdetailDto } from "./dto/create-userdetail.dto";
 import { UpdateUserdetailDto } from "./dto/update-userdetail.dto";
 import { Userdetail } from "./entities/userdetail.entity";
 import { UserdetailsService } from "./userdetails.service";
+import * as XLSX from 'xlsx';
+
 
 @Controller("userdetails")
 export class UserdetailsController {
@@ -26,11 +29,16 @@ export class UserdetailsController {
 
   @Post("/create")
   @UseGuards(AuthenticationGuard)
-  create(@Body() createUserdetailDto: CreateUserdetailDto, @Req() req: any) {
-    const user = req.user.id;
-    console.log("Successfully saved");  // Log the received data
-    return this.userdetailsService.create(createUserdetailDto, user);
-}
+  async create(@Body() createUserdetailDto: CreateUserdetailDto, @Req() req: any) {
+    try {
+      const user = req.user.id;
+      console.log("Received data:", createUserdetailDto);  // Log the received data
+      return await this.userdetailsService.create(createUserdetailDto, user);
+    } catch (error) {
+      console.error('Error creating user details:', error);
+      throw new BadRequestException('Validation failed or other error');
+    }
+  }
 
 
   @Get()
@@ -139,5 +147,29 @@ export class UserdetailsController {
     }
   }
 
+  
+  @Get('user-details/excel')
+  async exportUserReportToExcel(@Res() res: Response) {
+    const userDetails = await this.userdetailsService.getUserReport();
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(userDetails);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'UserDetails');
+    const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="userdetails.xlsx"',
+    );
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.send(buf);
+  }
+ 
+  @Get('user-details')
+  async getUserReport() {
+    return this.userdetailsService.getUserReport();
+  }
 
 }

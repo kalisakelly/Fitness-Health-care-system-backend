@@ -24,6 +24,12 @@ export class CreateUserdetailDto {
   @IsOptional()
   BMI: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  @Min(0, { message: 'age cannot be negative' })
+  @IsOptional()
+  age: number;
+
   @IsString()
   @IsIn(['male', 'female'], { message: 'Gender must be either "male" or "female"' })
   gender: string;

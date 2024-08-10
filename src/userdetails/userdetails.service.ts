@@ -390,6 +390,15 @@ export class UserdetailsService {
       throw new Error('Could not fetch BMI statistics');
     }
   }
-  
-}
 
+
+  async getUserReport(): Promise<Userdetail[]> {
+    return this.userdetailrepository.query(
+      `SELECT name, age, healthstatus, gender, "BMI" 
+       FROM "Userdetails" u`
+    );
+  }
+
+
+  }
+  
